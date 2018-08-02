@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 var commands = map[string]func(args []string){
@@ -39,6 +40,8 @@ Available commands:
 
 func new(args []string) {
 	printLogo()
+	fmt.Println("Start creating project ...")
+	time.Sleep(2 * time.Second)
 	if len(args) < 1 {
 		exitWithError(fmt.Errorf("Error: project name not assigned. Use:\n    aria new <project_name>"))
 	}
