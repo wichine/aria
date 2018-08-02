@@ -13,6 +13,7 @@ echo "                                  ";
 
 echo "Start building ...";
 echo " ";
+Sleep 2s;
 
 cur_dir="$(cd `dirname $0`;pwd)"
 echo "Change to build dir ..."
