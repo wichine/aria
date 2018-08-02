@@ -4,8 +4,8 @@ import (
 	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/ratelimit"
-	"github.com/golang/time/rate"
 	"github.com/sony/gobreaker"
+	"golang.org/x/time/rate"
 	"time"
 )
 

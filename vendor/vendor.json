@@ -1,0 +1,97 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "BMaJDqifvwJ5LWPOiZn9Rjet/94=",
+			"path": "github.com/gin-gonic/gin",
+			"revision": "6d913fc343cfac80d656db5be67a0ffb1323ba0d",
+			"revisionTime": "2018-03-29T06:33:07Z"
+		},
+		{
+			"checksumSHA1": "aUEp6nQansSqG2MTob/Apj48VgM=",
+			"path": "github.com/go-kit/kit/circuitbreaker",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "0x6tKraaJRo//YVEB2FotP2Mhww=",
+			"path": "github.com/go-kit/kit/endpoint",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "KrIRJ4p3nRze4NcxfgX5+N9+D1M=",
+			"path": "github.com/go-kit/kit/log",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "nTvjvV5LXuF2GYf7jIi+OFb1mjk=",
+			"path": "github.com/go-kit/kit/metrics",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "hArYy708bvIGnxJIC/Tr/ehkUms=",
+			"path": "github.com/go-kit/kit/metrics/prometheus",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "3LI4+lJMj3WTbWOVouIwFwRG2BE=",
+			"path": "github.com/go-kit/kit/ratelimit",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "R5BgDd1wAddQcw3Ael6rQ0D4+6Y=",
+			"path": "github.com/go-kit/kit/transport/grpc",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "iOh5nq0kF9a2txPOhApsVuDcj6Y=",
+			"path": "github.com/golang/protobuf/proto",
+			"revision": "427e165155e0a4ff5993a36657c1f733f5b0f782",
+			"revisionTime": "2018-07-20T23:31:16Z"
+		},
+		{
+			"checksumSHA1": "5IUpj+w/TVy3rj8oL3lFS0p7TEc=",
+			"path": "github.com/prometheus/client_golang/prometheus",
+			"revision": "bcbbc08eb2ddff3af83bbf11e7ec13b4fd730b6e",
+			"revisionTime": "2018-07-13T20:10:52Z"
+		},
+		{
+			"checksumSHA1": "6HQLUzskMvCLHDJ0msFjZ8IDqqI=",
+			"path": "github.com/sony/gobreaker",
+			"revision": "3cb67c77c1d1e72fda30c6970578164d24f806b6",
+			"revisionTime": "2017-11-08T10:09:24Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "054b33e6527139ad5b1ec2f6232c3b175bd9a30c",
+			"revisionTime": "2017-07-05T22:25:54Z"
+		},
+		{
+			"checksumSHA1": "HoCvrd3hEhsFeBOdEw7cbcfyk50=",
+			"path": "golang.org/x/time/rate",
+			"revision": "fbb02b2291d28baffd63558aa44b4b56f178d650",
+			"revisionTime": "2018-04-12T16:56:04Z"
+		},
+		{
+			"checksumSHA1": "+BWUoxQPIqsJwJNW8G6b80DUXNU=",
+			"path": "google.golang.org/grpc",
+			"revision": "373f007e6a3c523637dbabcbc34099b649368baf",
+			"revisionTime": "2018-06-19T23:01:45Z"
+		},
+		{
+			"checksumSHA1": "QOQvaHFYbpuJrlveFDwJys+cqeU=",
+			"path": "prometheus/client_golang/prometheus/promhttp",
+			"revision": "c5b7fccd204277076155f10851dad72b76a49317",
+			"revisionTime": "2016-08-17T15:48:24Z"
+		}
+	],
+	"rootPath": "aria"
+}

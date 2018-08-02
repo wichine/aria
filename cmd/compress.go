@@ -16,6 +16,7 @@ import (
 var exclude = map[string]bool{
 	".DS_Store": true,
 	".idea":     true,
+	".git":      true,
 	"cmd":       true,
 	"readme.md": true,
 	"img":       true,
