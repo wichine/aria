@@ -18,6 +18,7 @@ var exclude = map[string]bool{
 	".idea":     true,
 	"cmd":       true,
 	"readme.md": true,
+	"img":       true,
 }
 
 // compress aria assets and inject to assets.go
