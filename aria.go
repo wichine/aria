@@ -9,7 +9,7 @@ import (
 )
 
 var commands = map[string]func(args []string){
-	"new":       new,
+	"new":       newMicroService,
 	"selfbuild": selfBuild,
 }
 
@@ -17,19 +17,19 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 	if len(args) < 1 {
-		usage()
+		printUsage()
 		return
 	}
 	if cmd, ok := commands[args[0]]; ok {
 		cmd(args[1:])
 	} else {
 		fmt.Printf("Command not support: %s\n", args[0])
-		usage()
+		printUsage()
 		return
 	}
 }
 
-func usage() {
+func printUsage() {
 	fmt.Println(`Usage: 
     aria command [arguments]
 
@@ -38,9 +38,9 @@ Available commands:
 `)
 }
 
-func new(args []string) {
+func newMicroService(args []string) {
 	printLogo()
-	fmt.Println("Start creating project ...")
+	fmt.Println("Start creating a micro service project ...")
 	time.Sleep(2 * time.Second)
 	if len(args) < 1 {
 		exitWithError(fmt.Errorf("Error: project name not assigned. Use:\n    aria new <project_name>"))
@@ -54,7 +54,7 @@ func new(args []string) {
 	if !fileInfo.IsDir() {
 		exitWithError(fmt.Errorf("Error: can't open GOPATH(%s) which is not a directory."))
 	}
-	err = UnpackAssets(GzFileBytes, projectName, filepath.Join(gopath, "src"))
+	err = UnpackAssets(MICROSERVICE_GzFile, projectName, filepath.Join(gopath, "src"), "microservice")
 	if err != nil {
 		exitWithError(fmt.Errorf("Error: %s", err))
 	}

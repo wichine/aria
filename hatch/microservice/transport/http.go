@@ -1,9 +1,9 @@
 package transport
 
 import (
-	"aria/endpoint"
-	"aria/protocol"
-	pb "aria/protocol/production"
+	"aria/hatch/microservice/endpoint"
+	"aria/hatch/microservice/protocol"
+	pb "aria/hatch/microservice/protocol/production"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	kitendpoint "github.com/go-kit/kit/endpoint"

@@ -1,8 +1,8 @@
 package transport
 
 import (
-	"aria/endpoint"
-	pb "aria/protocol/production"
+	"aria/hatch/microservice/endpoint"
+	pb "aria/hatch/microservice/protocol/production"
 	"context"
 	"fmt"
 	grpctransport "github.com/go-kit/kit/transport/grpc"

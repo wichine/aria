@@ -1,7 +1,7 @@
 package transport
 
 import (
-	pb "aria/protocol/production"
+	pb "aria/hatch/microservice/protocol/production"
 	grpccontext "golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"testing"

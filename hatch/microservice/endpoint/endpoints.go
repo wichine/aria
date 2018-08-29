@@ -1,7 +1,7 @@
 package endpoint
 
 import (
-	"aria/service"
+	"aria/hatch/microservice/service"
 	"github.com/go-kit/kit/endpoint"
 )
 

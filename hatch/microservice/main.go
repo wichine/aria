@@ -1,10 +1,10 @@
 package main
 
 import (
-	"aria/endpoint"
-	pb "aria/protocol/production"
-	"aria/service"
-	"aria/transport"
+	"aria/hatch/microservice/endpoint"
+	pb "aria/hatch/microservice/protocol/production"
+	"aria/hatch/microservice/service"
+	"aria/hatch/microservice/transport"
 	"google.golang.org/grpc"
 	"net"
 )

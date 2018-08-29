@@ -17,34 +17,43 @@ var exclude = map[string]bool{
 	".DS_Store": true,
 	".idea":     true,
 	".git":      true,
-	"cmd":       true,
-	"readme.md": true,
-	"img":       true,
 }
+
+var assetsPath = "./hatch"
+var assetsFileName = "assets.go"
+var tempTemplateFile = ".assets.go.temp"
 
 // compress aria assets and inject to assets.go
 func InjectAssets() error {
-	content, err := compress("../../aria")
+	templateFileContent, err := ioutil.ReadFile(assetsFileName)
+	if err != nil {
+		return err
+	}
+	assetsContent := string(templateFileContent)
+	if strings.Index(assetsContent, "TEMPLATE") < 0 {
+		return fmt.Errorf("%s is not a correct template file.", assetsFileName)
+	}
+	err = ioutil.WriteFile(tempTemplateFile, templateFileContent, 0644)
+	if err != nil {
+		return fmt.Errorf("write temp file error: %s", err)
+	}
+
+	dirList, err := getDirList(assetsPath)
 	if err != nil {
 		return err
 	}
 
-	// ioutil.WriteFile("temp.tar.gz", content, 0666)
-
-	encodeContent := base64.StdEncoding.EncodeToString(content)
-
-	templateFileContent, err := ioutil.ReadFile("assets.go")
-	if err != nil {
-		return err
+	for _, dirName := range dirList {
+		gzByte, err := compress(filepath.Join(assetsPath, dirName))
+		if err != nil {
+			return err
+		}
+		encodeGzContent := base64.StdEncoding.EncodeToString(gzByte)
+		template := fmt.Sprintf("%s_TEMPLATE", strings.ToUpper(dirName))
+		assetsContent = strings.Replace(assetsContent, template, encodeGzContent, -1)
 	}
-	templateSlice := bytes.SplitN(templateFileContent, []byte("`"), -1)
-	if len(templateSlice) != 3 {
-		panic("assets.go is not a correct template!")
-	}
-	templateSlice[1] = []byte(encodeContent)
 
-	newContent := bytes.Join(templateSlice, []byte("`"))
-	err = ioutil.WriteFile("assets.go", newContent, 0644)
+	err = ioutil.WriteFile(assetsFileName, []byte(assetsContent), 0644)
 	if err != nil {
 		return err
 	}
@@ -53,25 +62,18 @@ func InjectAssets() error {
 
 // restore assets.go to original template
 func RestoreAssets() error {
-	templateFileContent, err := ioutil.ReadFile("assets.go")
-	if err != nil {
-		return err
+	_, err := os.Stat(tempTemplateFile)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("temp file <%s> not exsits", tempTemplateFile)
 	}
-	templateSlice := bytes.SplitN(templateFileContent, []byte("`"), -1)
-	if len(templateSlice) != 3 {
-		panic("assets.go is not in correct format!")
-	}
-	templateSlice[1] = []byte("template")
-
-	newContent := bytes.Join(templateSlice, []byte("`"))
-	err = ioutil.WriteFile("assets.go", newContent, 0644)
+	err = os.Rename(tempTemplateFile, assetsFileName)
 	if err != nil {
-		return err
+		return fmt.Errorf("rename temp file error: %s", err)
 	}
 	return nil
 }
 
-func UnpackAssets(gzByte []byte, projectName, rootPath string) error {
+func UnpackAssets(gzByte []byte, projectName, rootPath, projectType string) error {
 	if gzByte == nil || len(gzByte) == 0 {
 		return fmt.Errorf("gzByte must be a gz file content with base64 encoding")
 	}
@@ -96,7 +98,7 @@ func UnpackAssets(gzByte []byte, projectName, rootPath string) error {
 	// }
 	// defer buf.Close()
 	buf := bytes.NewReader(gzContent)
-	err = decompress(buf, projectName, rootPath)
+	err = decompress(buf, projectName, rootPath, projectType)
 	if err != nil {
 		return fmt.Errorf("decompress error: %s", err)
 	}
@@ -184,7 +186,7 @@ func docompress(dir string, tw *tar.Writer, relativeBase string) error {
 	return nil
 }
 
-func decompress(reader io.Reader, replaceRoot, rootPath string) error {
+func decompress(reader io.Reader, replaceRoot, rootPath, projectType string) error {
 	gr, err := gzip.NewReader(reader)
 	if err != nil {
 		return fmt.Errorf("new gzip reader error: %s", err)
@@ -229,11 +231,19 @@ func decompress(reader io.Reader, replaceRoot, rootPath string) error {
 		if err != nil {
 			return fmt.Errorf("read content from buffer error: %s", err)
 		}
-		newFileContent := bytes.Replace(fileContent, []byte(`"aria/`), []byte(fmt.Sprintf(`"%s/`, replaceRoot)), -1)
+		newFileContent := bytes.Replace(fileContent, []byte(fmt.Sprintf(`"aria/hatch/%s/`, projectType)), []byte(fmt.Sprintf(`"%s/`, replaceRoot)), -1)
 		err = ioutil.WriteFile(fileNameAbs, newFileContent, 0666)
 		if err != nil {
 			return fmt.Errorf("write content to file error: %s", err)
 		}
 	}
 	return nil
+}
+
+func getDirList(dirpath string) ([]string, error) {
+	f, err := os.Open(dirpath)
+	if err != nil {
+		return nil, fmt.Errorf("open dir %s error: %s", dirpath, err)
+	}
+	return f.Readdirnames(-1)
 }

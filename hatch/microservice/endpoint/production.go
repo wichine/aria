@@ -1,8 +1,8 @@
 package endpoint
 
 import (
-	pb "aria/protocol/production"
-	"aria/service"
+	pb "aria/hatch/microservice/protocol/production"
+	"aria/hatch/microservice/service"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
