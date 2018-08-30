@@ -84,20 +84,6 @@ func UnpackAssets(gzByte []byte, projectName, rootPath, relativeDirNameInHatch s
 		return fmt.Errorf("decode base64 error: %s", err)
 	}
 
-	// tf, err := ioutil.TempFile("./", ".tmp.")
-	// if err != nil {
-	// 	return fmt.Errorf("create temp file error: %s", err)
-	// }
-	// _, err = tf.Write(gzContent)
-	// if err != nil {
-	// 	return fmt.Errorf("write to temp file error: %s", err)
-	// }
-	// tf.Close()
-	// buf, err := os.Open(tf.Name())
-	// if err != nil {
-	// 	return fmt.Errorf("open temp file error: %s", err)
-	// }
-	// defer buf.Close()
 	buf := bytes.NewReader(gzContent)
 	err = decompress(buf, projectName, rootPath, relativeDirNameInHatch)
 	if err != nil {
@@ -108,16 +94,11 @@ func UnpackAssets(gzByte []byte, projectName, rootPath, relativeDirNameInHatch s
 
 func compress(dir string) ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
-	// buf, err := ioutil.TempFile("./", ".tmp.")
-	// if err != nil {
-	// 	return nil, fmt.Errorf("create new temp gz file error: %s", err)
-	// }
-	// defer buf.Close()
+
 	gw, err := gzip.NewWriterLevel(buf, gzip.BestCompression)
 	if err != nil {
 		return nil, err
 	}
-	// gw := gzip.NewWriter(buf)
 	tw := tar.NewWriter(gw)
 
 	abs, err := filepath.Abs(dir)
@@ -132,7 +113,7 @@ func compress(dir string) ([]byte, error) {
 	gw.Close()
 
 	content, err := ioutil.ReadAll(buf)
-	// content, err := ioutil.ReadFile(buf.Name())
+
 	if err != nil {
 		return nil, err
 	}
@@ -220,12 +201,7 @@ func decompress(reader io.Reader, replaceRoot, rootPath, relativeDirNameInHatch 
 		if err != nil {
 			return fmt.Errorf("make dir error: %s", err)
 		}
-		// f, err := os.Create(fileName)
-		// if err != nil {
-		// 	return err
-		// }
-		// io.Copy(f, tr)
-		// f.Close()
+
 		buf := bytes.NewBuffer([]byte{})
 		io.Copy(buf, tr)
 		fileContent, err := ioutil.ReadAll(buf)
