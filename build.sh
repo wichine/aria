@@ -1,6 +1,7 @@
 # !/bin/bash
-version=0.1.0
 set -e
+
+version=$(go run *.go selfbuild version)
 
 echo "   _____             .__          ";
 echo "  /  _  \   _______  |__| _____   ";

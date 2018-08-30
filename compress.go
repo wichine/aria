@@ -73,7 +73,8 @@ func RestoreAssets() error {
 	return nil
 }
 
-func UnpackAssets(gzByte []byte, projectName, rootPath, projectType string) error {
+// unpack assets from bytes stored in assets.go, argument "relativeDirNameInHatch" must be the dirname in aria/hatch.
+func UnpackAssets(gzByte []byte, projectName, rootPath, relativeDirNameInHatch string) error {
 	if gzByte == nil || len(gzByte) == 0 {
 		return fmt.Errorf("gzByte must be a gz file content with base64 encoding")
 	}
@@ -98,7 +99,7 @@ func UnpackAssets(gzByte []byte, projectName, rootPath, projectType string) erro
 	// }
 	// defer buf.Close()
 	buf := bytes.NewReader(gzContent)
-	err = decompress(buf, projectName, rootPath, projectType)
+	err = decompress(buf, projectName, rootPath, relativeDirNameInHatch)
 	if err != nil {
 		return fmt.Errorf("decompress error: %s", err)
 	}
@@ -186,7 +187,7 @@ func docompress(dir string, tw *tar.Writer, relativeBase string) error {
 	return nil
 }
 
-func decompress(reader io.Reader, replaceRoot, rootPath, projectType string) error {
+func decompress(reader io.Reader, replaceRoot, rootPath, relativeDirNameInHatch string) error {
 	gr, err := gzip.NewReader(reader)
 	if err != nil {
 		return fmt.Errorf("new gzip reader error: %s", err)
@@ -231,7 +232,7 @@ func decompress(reader io.Reader, replaceRoot, rootPath, projectType string) err
 		if err != nil {
 			return fmt.Errorf("read content from buffer error: %s", err)
 		}
-		newFileContent := bytes.Replace(fileContent, []byte(fmt.Sprintf(`"aria/hatch/%s/`, projectType)), []byte(fmt.Sprintf(`"%s/`, replaceRoot)), -1)
+		newFileContent := bytes.Replace(fileContent, []byte(fmt.Sprintf(`"aria/hatch/%s/`, relativeDirNameInHatch)), []byte(fmt.Sprintf(`"%s/`, replaceRoot)), -1)
 		err = ioutil.WriteFile(fileNameAbs, newFileContent, 0666)
 		if err != nil {
 			return fmt.Errorf("write content to file error: %s", err)

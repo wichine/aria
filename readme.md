@@ -16,12 +16,12 @@ Aria名字来源于美剧《冰与火之歌》中史塔克家族的小女儿的�
 
 1.  获取`aria`可执行文件（通过上面的“编译”步骤自行编译，或向他人索取）
 2.  将`aria`拷贝至某`$PATH`目录下
-3.  执行`aria new <project_name>`创建微服务项目
+3.  执行`aria -h`获取使用帮助
 
-命令执行成功预期输出如下：
+创建一个微服务框架的命令执行成功预期输出如下：
 
 ```
-$ aria new test_project
+$ aria service create -n test_project
 
    _____             .___
   /  _  \   _______  |   | _____
@@ -30,6 +30,7 @@ $ aria new test_project
 \____|__  /  |__|    |___| (____  /
         \/                      \/
 
+Start creating a micro service project ...
 /.../gopath/src/test_project/endpoint/endpoints.go
 /.../gopath/src/test_project/endpoint/middleware.go
 /.../gopath/src/test_project/endpoint/production.go
@@ -45,6 +46,7 @@ $ aria new test_project
 /.../gopath/src/test_project/transport/grpc.go
 /.../gopath/src/test_project/transport/grpc_test.go
 /.../gopath/src/test_project/transport/http.go
+...
 
 Successfully create new project [test_project] in your GOPATH( /.../gopath ).
 ```
