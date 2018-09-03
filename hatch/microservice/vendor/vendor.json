@@ -309,12 +309,6 @@
 			"revisionTime": "2018-07-22T05:21:00Z"
 		},
 		{
-			"checksumSHA1": "+BWUoxQPIqsJwJNW8G6b80DUXNU=",
-			"path": "google.golang.org/grpc",
-			"revision": "373f007e6a3c523637dbabcbc34099b649368baf",
-			"revisionTime": "2018-06-19T23:01:45Z"
-		},
-		{
 			"checksumSHA1": "xX1+b0/gjwxrjocYH5W/LyQPjs4=",
 			"path": "google.golang.org/grpc/balancer",
 			"revision": "373f007e6a3c523637dbabcbc34099b649368baf",
@@ -477,5 +471,5 @@
 			"revisionTime": "2016-08-17T15:48:24Z"
 		}
 	],
-	"rootPath": "aria"
+	"rootPath": "aria/hatch/microservice"
 }
