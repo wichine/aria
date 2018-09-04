@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-type grpcServer struct {
+type productionGrpcServer struct {
 	addProductionHandler    grpctransport.Handler
 	getAllProductionHandler grpctransport.Handler
 }
@@ -20,7 +20,7 @@ func NewGrpcServer(epts endpoint.Endpoints) pb.ProductionServiceServer {
 	// add middlerware here, refer to Go kit gRPC Interceptor
 	opts := []grpctransport.ServerOption{}
 
-	return &grpcServer{
+	return &productionGrpcServer{
 		addProductionHandler: grpctransport.NewServer(
 			epts.AddProductionEndpoint,
 			decodeAddProductionRequest,
@@ -36,14 +36,14 @@ func NewGrpcServer(epts endpoint.Endpoints) pb.ProductionServiceServer {
 	}
 }
 
-func (g *grpcServer) AddProduction(ctx grpccontext.Context, request *pb.AddProductionRequest) (*pb.AddProductionResponse, error) {
+func (g *productionGrpcServer) AddProduction(ctx grpccontext.Context, request *pb.AddProductionRequest) (*pb.AddProductionResponse, error) {
 	_, resp, err := g.addProductionHandler.ServeGRPC(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	return resp.(*pb.AddProductionResponse), nil
 }
-func (g *grpcServer) GetAllProduction(ctx grpccontext.Context, request *pb.GetAllProductionRequest) (*pb.GetAllProductionResponse, error) {
+func (g *productionGrpcServer) GetAllProduction(ctx grpccontext.Context, request *pb.GetAllProductionRequest) (*pb.GetAllProductionResponse, error) {
 	_, resp, err := g.getAllProductionHandler.ServeGRPC(ctx, request)
 	if err != nil {
 		return nil, err

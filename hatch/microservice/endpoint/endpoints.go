@@ -5,8 +5,13 @@ import (
 	"github.com/go-kit/kit/endpoint"
 )
 
-// 定义endpoints接口
+type AriaEndpoint struct {
+	endpoint.Endpoint
+	DecodeFunc func()
+	EncodeFunc func()
+}
 
+// 定义endpoints接口
 type Endpoints struct {
 	AddProductionEndpoint    endpoint.Endpoint
 	GetAllProductionEndpoint endpoint.Endpoint
