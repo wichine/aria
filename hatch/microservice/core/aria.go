@@ -17,10 +17,11 @@ func (s *Service) WithMiddleware(m endpoint.Middleware) {
 }
 
 func (s *Service) Compose() endpoint.Endpoint {
+	final := s.Endpoint
 	for _, m := range s.Middleware {
-		s.Endpoint = m(s.Endpoint)
+		final = m(final)
 	}
-	return s.Endpoint
+	return final
 }
 
 func NewDefaultService() *Service {
