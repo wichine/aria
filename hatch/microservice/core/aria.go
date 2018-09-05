@@ -12,8 +12,8 @@ type Service struct {
 	Endpoint   endpoint.Endpoint
 }
 
-func (s *Service) WithMiddleware(m endpoint.Middleware) {
-	s.Middleware = append(s.Middleware, m)
+func (s *Service) WithMiddleware(ms ...endpoint.Middleware) {
+	s.Middleware = append(ms, s.Middleware...)
 }
 
 func (s *Service) Compose() endpoint.Endpoint {
