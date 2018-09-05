@@ -1,29 +1,43 @@
 package core
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
-	gokitEndpoint "github.com/go-kit/kit/endpoint"
-	gokitgrpc "github.com/go-kit/kit/transport/grpc"
+	"github.com/go-kit/kit/endpoint"
 	"google.golang.org/grpc"
 	"net"
 )
 
-type EndpointType int
-
-const (
-	Common EndpointType = iota
-	Proxy
-)
-
-type AriaCommon struct {
-	EpType EndpointType
-	Decode func(ctx context.Context, request interface{}) (interface{}, error)
-	Encode func(ctx context.Context, response interface{}) (interface{}, error)
+type Service struct {
+	Middleware []endpoint.Middleware
+	Endpoint   endpoint.Endpoint
 }
+
+func (s *Service) WithMiddleware(m endpoint.Middleware) {
+	s.Middleware = append(s.Middleware, m)
+}
+
+func (s *Service) Compose() endpoint.Endpoint {
+	for _, m := range s.Middleware {
+		s.Endpoint = m(s.Endpoint)
+	}
+	return s.Endpoint
+}
+
+func NewDefaultService() *Service {
+	return &Service{
+		Middleware: []endpoint.Middleware{},
+	}
+}
+
 type AriaConfig struct {
 	GrpcPort string
 	HttpPort string
+}
+
+type Aria struct {
+	GrpcServer   *grpc.Server
+	GrpcListener net.Listener
+	HttpEngine   *gin.Engine
 }
 
 func NewAria(config AriaConfig) *Aria {
@@ -37,13 +51,8 @@ func NewAria(config AriaConfig) *Aria {
 	}
 }
 
-type Aria struct {
-	GrpcServer   *grpc.Server
-	GrpcListener net.Listener
-}
-
-func (a *Aria) RegisterAll(services ...AriaService) {
-	for _, s := range services {
+func (a *Aria) RegisterAll(ts ...Transport) {
+	for _, s := range ts {
 		s.Register(a.GrpcServer)
 	}
 }
@@ -53,17 +62,6 @@ func (a *Aria) ServeGRPC() {
 	}
 }
 
-type AriaServiceHandler interface {
-	Endpoint() gokitEndpoint.Endpoint
-	Proxy() gokitEndpoint.Endpoint
-	Transport() AriaTransport
-}
-
-type AriaService interface {
+type Transport interface {
 	Register(s *grpc.Server)
-}
-
-type AriaTransport struct {
-	Http gin.HandlerFunc
-	Grpc gokitgrpc.Handler
 }

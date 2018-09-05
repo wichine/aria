@@ -4,9 +4,6 @@ import (
 	"aria/hatch/microservice/core"
 	pb "aria/hatch/microservice/protocol/production"
 	"context"
-	"fmt"
-	"github.com/go-kit/kit/endpoint"
-	gokitgrpc "github.com/go-kit/kit/transport/grpc"
 )
 
 // model
@@ -20,15 +17,13 @@ type Production struct {
 }
 
 type GetAllProductionService struct {
-	EndpointType core.EndpointType
-	Decode       func(ctx context.Context, request interface{}) (interface{}, error)
-	Encode       func(ctx context.Context, response interface{}) (interface{}, error)
-	Do           func(ctx context.Context) ([]*Production, error)
+	*core.Service
+	Do func(ctx context.Context) ([]*Production, error)
 }
 
-func GetAllProductionImpl(epType core.EndpointType) *GetAllProductionService {
-	return &GetAllProductionService{
-		EndpointType: epType,
+func GetAllProductionImpl() *GetAllProductionService {
+	s := &GetAllProductionService{
+		Service: core.NewDefaultService(),
 		// true implement here
 		Do: func(ctx context.Context) ([]*Production, error) {
 			return []*Production{
@@ -37,31 +32,14 @@ func GetAllProductionImpl(epType core.EndpointType) *GetAllProductionService {
 				},
 			}, nil
 		},
-		Decode: func(_ context.Context, request interface{}) (interface{}, error) {
-			req, ok := request.(*pb.GetAllProductionRequest)
-			if !ok {
-				return nil, fmt.Errorf("Error translate [request] to [pb.GetAllProductionRequest]")
-			}
-			return req, nil
-		},
-		Encode: func(_ context.Context, response interface{}) (interface{}, error) {
-			resp, ok := response.(*pb.GetAllProductionResponse)
-			if !ok {
-				return nil, fmt.Errorf("Error translate [response] to [pb.GetAllProductionResponse]")
-			}
-			return resp, nil
-		},
 	}
-}
-
-func (gas *GetAllProductionService) Endpoint() endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		ps, err := gas.Do(ctx)
+	s.Endpoint = func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		rawResp, err := s.Do(ctx)
 		if err != nil {
 			return nil, err
 		}
-		var result []*pb.Production
-		for _, p := range ps {
+		var productions []*pb.Production
+		for _, p := range rawResp {
 			prod := &pb.Production{
 				Type:       p.Type,
 				Code:       p.Code,
@@ -70,25 +48,21 @@ func (gas *GetAllProductionService) Endpoint() endpoint.Endpoint {
 				DueDate:    p.DueDate,
 				AnnualRate: p.AnnualRate,
 			}
-			result = append(result, prod)
+			productions = append(productions, prod)
 		}
-		return &pb.GetAllProductionResponse{Status: 0, Production: result}, nil
+		// encode to true res
+		return &pb.GetAllProductionResponse{Status: 0, Production: productions}, nil
 	}
+	return s
 }
 
-func (gas *GetAllProductionService) Transport() core.AriaTransport {
-	ep := gas.Endpoint()
-	return core.AriaTransport{
-		Grpc: gokitgrpc.NewServer(
-			ep,
-			gas.Decode,
-			gas.Encode,
-		),
+// Serve grpc handler
+func (gas *GetAllProductionService) GetAllProduction(ctx context.Context, request *pb.GetAllProductionRequest) (response *pb.GetAllProductionResponse, err error) {
+	r, err := gas.Compose()(ctx, request)
+	if err != nil {
+		return nil, err
 	}
-}
-
-func (gas *GetAllProductionService) Proxy() endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		return nil, nil
-	}
+	// coercion response
+	res := r.(*pb.GetAllProductionResponse)
+	return res, nil
 }
