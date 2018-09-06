@@ -3,21 +3,24 @@ package production
 import (
 	"aria/hatch/microservice/core"
 	pb "aria/hatch/microservice/protocol/production"
-	"aria/hatch/microservice/service"
 	"context"
 	"fmt"
+	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/sd"
+	"google.golang.org/grpc"
+	"io"
 )
 
 type AddProductionService struct {
 	*core.Service
-	Do func(ctx context.Context, production *service.Production) (int64, error)
+	Do func(ctx context.Context, production *Production) (int64, error)
 }
 
 func AddProductionImpl() *AddProductionService {
 	a := &AddProductionService{
 		Service: core.NewDefaultService(),
 		// true implement
-		Do: func(ctx context.Context, production *service.Production) (int64, error) {
+		Do: func(ctx context.Context, production *Production) (int64, error) {
 			return 0, nil
 		},
 	}
@@ -25,7 +28,7 @@ func AddProductionImpl() *AddProductionService {
 		// coercion first
 		req := request.(*pb.AddProductionRequest)
 		// then convert to 'Do' param
-		prod := &service.Production{
+		prod := &Production{
 			Type:       req.Type,
 			Code:       req.Code,
 			Name:       req.Name,
@@ -52,4 +55,23 @@ func (aps *AddProductionService) AddProduction(ctx context.Context, request *pb.
 	// coercion response
 	res := r.(*pb.AddProductionResponse)
 	return res, nil
+}
+
+func (aps *AddProductionService) Proxy() sd.Factory {
+	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
+		address := instance
+		conn, err := grpc.Dial(address, grpc.WithInsecure())
+		if err != nil {
+			return nil, nil, fmt.Errorf("dial grpc error: %s", err)
+		}
+		client := pb.NewProductionServiceClient(conn)
+		ep := func(ctx context.Context, request interface{}) (interface{}, error) {
+			req, ok := request.(*pb.AddProductionRequest)
+			if !ok {
+				return nil, fmt.Errorf("can not convert request to pb.AddProductionRequest")
+			}
+			return client.AddProduction(ctx, req)
+		}
+		return ep, conn, nil
+	}
 }

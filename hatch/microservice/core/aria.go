@@ -41,15 +41,15 @@ type Aria struct {
 	HttpEngine   *gin.Engine
 }
 
-func NewAria(config AriaConfig) *Aria {
+func NewAria(config AriaConfig) (*Aria, error) {
 	lis, err := net.Listen("tcp", config.GrpcPort)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	return &Aria{
 		GrpcListener: lis,
 		GrpcServer:   grpc.NewServer(),
-	}
+	}, nil
 }
 
 func (a *Aria) RegisterAll(ts ...Transport) {
@@ -57,10 +57,11 @@ func (a *Aria) RegisterAll(ts ...Transport) {
 		s.Register(a.GrpcServer)
 	}
 }
-func (a *Aria) ServeGRPC() {
+func (a *Aria) ServeGRPC() error {
 	if err := a.GrpcServer.Serve(a.GrpcListener); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 type Transport interface {

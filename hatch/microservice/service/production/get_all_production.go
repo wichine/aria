@@ -4,17 +4,12 @@ import (
 	"aria/hatch/microservice/core"
 	pb "aria/hatch/microservice/protocol/production"
 	"context"
+	"fmt"
+	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/sd"
+	"google.golang.org/grpc"
+	"io"
 )
-
-// model
-type Production struct {
-	Type       string
-	Code       string
-	Name       string
-	ValueDate  int64
-	DueDate    int64
-	AnnualRate int64
-}
 
 type GetAllProductionService struct {
 	*core.Service
@@ -65,4 +60,23 @@ func (gas *GetAllProductionService) GetAllProduction(ctx context.Context, reques
 	// coercion response
 	res := r.(*pb.GetAllProductionResponse)
 	return res, nil
+}
+
+func (gas *GetAllProductionService) Proxy() sd.Factory {
+	return func(instance string) (endpoint.Endpoint, io.Closer, error) {
+		address := instance
+		conn, err := grpc.Dial(address, grpc.WithInsecure())
+		if err != nil {
+			return nil, nil, fmt.Errorf("dial grpc error: %s", err)
+		}
+		client := pb.NewProductionServiceClient(conn)
+		ep := func(ctx context.Context, request interface{}) (interface{}, error) {
+			req, ok := request.(*pb.GetAllProductionRequest)
+			if !ok {
+				return nil, fmt.Errorf("can not convert request to pb.AddProductionRequest")
+			}
+			return client.GetAllProduction(ctx, req)
+		}
+		return ep, conn, nil
+	}
 }

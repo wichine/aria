@@ -99,6 +99,30 @@
 			"revisionTime": "2018-03-19T17:45:01Z"
 		},
 		{
+			"checksumSHA1": "N8v+CT0605zJF2qjA5Woyx9aZ8E=",
+			"path": "github.com/go-kit/kit/sd",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "3Zq6Y7hcklPnMeaZi3wflAmPR98=",
+			"path": "github.com/go-kit/kit/sd/etcdv3",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "Ey6Jf7WehHPfUfbAeDWwC7sxwOs=",
+			"path": "github.com/go-kit/kit/sd/internal/instance",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
+			"checksumSHA1": "u0RJd9Z/ibtniP8mlUsDG1pDusw=",
+			"path": "github.com/go-kit/kit/sd/lb",
+			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",
+			"revisionTime": "2018-03-19T17:45:01Z"
+		},
+		{
 			"checksumSHA1": "R5BgDd1wAddQcw3Ael6rQ0D4+6Y=",
 			"path": "github.com/go-kit/kit/transport/grpc",
 			"revision": "ca4112baa34cb55091301bdc13b1420a122b1b9e",

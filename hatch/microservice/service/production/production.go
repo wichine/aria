@@ -20,3 +20,12 @@ type ProductionService struct {
 func (ps *ProductionService) Register(server *grpc.Server) {
 	pb.RegisterProductionServiceServer(server, ps)
 }
+
+type Production struct {
+	Type       string
+	Code       string
+	Name       string
+	ValueDate  int64
+	DueDate    int64
+	AnnualRate int64
+}
