@@ -1,24 +1,15 @@
 package svcdiscovery
 
 import (
+	"aria/hatch/microservice/core/log"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/log"
 	kitsd "github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/etcdv3"
 	"github.com/go-kit/kit/sd/lb"
-	"os"
 	"time"
 )
-
-var logger log.Logger
-
-func init() {
-	logger = log.NewLogfmtLogger(os.Stderr)
-	log.With(logger, "time", log.DefaultTimestampUTC)
-	log.With(logger, "caller", log.DefaultCaller)
-}
 
 type EtcdConfig struct {
 	Servers []string
@@ -66,7 +57,7 @@ func (sd *etcdv3SD) Register(serviceKey, instanceAddress string) error {
 		Value: instanceAddress,
 		TTL:   etcdv3.NewTTLOption(3*time.Second, 10*time.Second),
 	}
-	registrar := etcdv3.NewRegistrar(sd.client, service, logger)
+	registrar := etcdv3.NewRegistrar(sd.client, service, log.DefaultGoKitLogger)
 	sd.registrar = registrar
 	registrar.Register()
 	return nil
@@ -77,11 +68,11 @@ func (sd *etcdv3SD) DeRegister() {
 }
 
 func (sd *etcdv3SD) Subscribe(serviceKey string, f kitsd.Factory) (endpoint.Endpoint, error) {
-	instancer, err := etcdv3.NewInstancer(sd.client, serviceKey, logger)
+	instancer, err := etcdv3.NewInstancer(sd.client, serviceKey, log.DefaultGoKitLogger)
 	if err != nil {
 		return nil, fmt.Errorf("create new instancer error: %s", err)
 	}
-	endpointer := kitsd.NewEndpointer(instancer, f, logger)
+	endpointer := kitsd.NewEndpointer(instancer, f, log.DefaultGoKitLogger)
 	balancer := lb.NewRoundRobin(endpointer)
 	retry := lb.Retry(3, 500*time.Millisecond, balancer)
 	return retry, nil
