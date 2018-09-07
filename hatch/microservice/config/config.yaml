@@ -12,10 +12,13 @@ service:
   # key used to registered to sd
   serviceKey: /services/example
 
+
 ####################################################
 # service discovery config
 ####################################################
 serviceDiscovery:
+  enable: true
+
   # start a etcd server for service discovery before the service start
   etcdServerOn: true
 

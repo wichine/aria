@@ -1,55 +1,32 @@
 package core
 
 import (
+	"aria/hatch/microservice/core/config"
+	"aria/hatch/microservice/core/svcdiscovery"
 	"github.com/gin-gonic/gin"
-	"github.com/go-kit/kit/endpoint"
 	"google.golang.org/grpc"
 	"net"
+	"strings"
 )
 
-type Service struct {
-	Middleware []endpoint.Middleware
-	Endpoint   endpoint.Endpoint
-}
-
-func (s *Service) WithMiddleware(ms ...endpoint.Middleware) {
-	s.Middleware = append(ms, s.Middleware...)
-}
-
-func (s *Service) Compose() endpoint.Endpoint {
-	final := s.Endpoint
-	for _, m := range s.Middleware {
-		final = m(final)
-	}
-	return final
-}
-
-func NewDefaultService() *Service {
-	return &Service{
-		Middleware: []endpoint.Middleware{},
-	}
-}
-
-type AriaConfig struct {
-	GrpcPort string
-	HttpPort string
-}
-
 type Aria struct {
+	Config       *config.AriaConfig
 	GrpcServer   *grpc.Server
 	GrpcListener net.Listener
 	HttpEngine   *gin.Engine
 }
 
-func NewAria(config AriaConfig) (*Aria, error) {
-	lis, err := net.Listen("tcp", config.GrpcPort)
+func New(config *config.AriaConfig) *Aria {
+	port := strings.Split(config.Address, ":")[1]
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	return &Aria{
+		Config:       config,
 		GrpcListener: lis,
 		GrpcServer:   grpc.NewServer(),
-	}, nil
+	}
 }
 
 func (a *Aria) RegisterAll(ts ...Transport) {
@@ -58,6 +35,26 @@ func (a *Aria) RegisterAll(ts ...Transport) {
 	}
 }
 func (a *Aria) ServeGRPC() error {
+	if err := a.GrpcServer.Serve(a.GrpcListener); err != nil {
+		return err
+	}
+	return nil
+}
+func (a *Aria) Run() error {
+	// register service
+	if a.Config.ServiceDiscovery.Enable {
+		// register to etcd service discovery center
+		s, err := svcdiscovery.GetEtcdServiceDiscoveryInstance()
+		if err != nil {
+			panic(err)
+		}
+		err = s.Register(a.Config.ServiceKey, a.Config.Address)
+		if err != nil {
+			panic(err)
+		}
+		defer s.DeRegister()
+	}
+	// serve grpc / http
 	if err := a.GrpcServer.Serve(a.GrpcListener); err != nil {
 		return err
 	}

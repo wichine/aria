@@ -7,6 +7,7 @@ type Service struct {
 }
 
 type ServiceDiscovery struct {
+	Enable         bool
 	EtcdServerOn   bool
 	EtcdPeerConfig EtcdConfig
 	EtcdServers    []string
@@ -24,7 +25,7 @@ type EtcdConfig struct {
 	AdvertiseClientUrls      string
 }
 
-type MainConfig struct {
+type AriaConfig struct {
 	Service
 	ServiceDiscovery
 }
