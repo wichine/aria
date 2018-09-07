@@ -1,10 +1,9 @@
 package svcdiscovery
 
 import (
+	"aria/hatch/microservice/core/config"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
-	"os"
-	"strings"
 )
 
 type SvcDiscovery interface {
@@ -20,10 +19,9 @@ func GetEtcdServiceDiscoveryInstance() (SvcDiscovery, error) {
 	if globalSD != nil {
 		return globalSD, nil
 	}
-	etcdEnv := os.Getenv("ETCD_SERVERS")
-	servers := strings.Split(etcdEnv, ",")
+
 	globalSD, err = NewEtcdServiceDiscovery(EtcdConfig{
-		Servers: servers,
+		Servers: config.Config().EtcdServers,
 		Options: DefaultEtcdOptions,
 	})
 	if err != nil {

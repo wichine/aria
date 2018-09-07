@@ -2,26 +2,32 @@ package main
 
 import (
 	"aria/hatch/microservice/core"
+	"aria/hatch/microservice/core/config"
 	"aria/hatch/microservice/service/otherservice"
 	"aria/hatch/microservice/service/production"
 	"aria/hatch/microservice/svcdiscovery"
 	"fmt"
-	"os"
+	"strings"
 )
 
 func main() {
-	// mock the ECTD_SERVERS env, should read from env at start
-	os.Setenv("ETCD_SERVERS", "127.0.0.1:2379")
+	// init config
+	err := config.InitConfig("./config/config.yaml")
+	if err != nil {
+		panic(err)
+	}
 
 	// init other service instance
-	err := otherservice.InitOtherService()
+	err = otherservice.InitOtherService()
 	if err != nil {
 		panic(err)
 	}
 
 	// create service
+	grpcAddress := config.Config().Address
+	port := strings.Split(grpcAddress, ":")[1]
 	a, err := core.NewAria(core.AriaConfig{
-		GrpcPort: ":9090",
+		GrpcPort: fmt.Sprintf(":%s", port),
 	})
 	if err != nil {
 		panic(err)
@@ -37,7 +43,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = sd.Register("/services/example", "127.0.0.1:9090")
+	err = sd.Register(config.Config().ServiceKey, grpcAddress)
 	if err != nil {
 		panic(err)
 	}
