@@ -3,9 +3,9 @@ package main
 import (
 	"aria/hatch/microservice/core"
 	"aria/hatch/microservice/core/config"
+	"aria/hatch/microservice/core/svcdiscovery"
 	"aria/hatch/microservice/service/otherservice"
 	"aria/hatch/microservice/service/production"
-	"aria/hatch/microservice/svcdiscovery"
 	"fmt"
 	"strings"
 )

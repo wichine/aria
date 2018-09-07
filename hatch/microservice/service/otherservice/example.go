@@ -1,9 +1,9 @@
 package otherservice
 
 import (
+	"aria/hatch/microservice/core/svcdiscovery"
 	pb "aria/hatch/microservice/protocol/production"
 	"aria/hatch/microservice/service/production"
-	"aria/hatch/microservice/svcdiscovery"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
