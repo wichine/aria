@@ -1,8 +1,8 @@
-package production
+package exampleservice
 
 import (
 	"aria/hatch/microservice/core"
-	pb "aria/hatch/microservice/protocol/production"
+	pb "aria/hatch/microservice/protocol/example"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"

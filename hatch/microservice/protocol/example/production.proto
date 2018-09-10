@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package production;
+package example;
 
 service ProductionService {
     rpc AddProduction (AddProductionRequest) returns (AddProductionResponse) {}

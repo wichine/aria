@@ -4,8 +4,8 @@ import (
 	aria "aria/hatch/microservice/core"
 	"aria/hatch/microservice/core/config"
 	"aria/hatch/microservice/core/svcdiscovery"
+	"aria/hatch/microservice/service/exampleservice"
 	"aria/hatch/microservice/service/otherservice"
-	"aria/hatch/microservice/service/production"
 	"fmt"
 	"github.com/op/go-logging"
 	"os"
@@ -47,7 +47,7 @@ func main() {
 	a := aria.New(config.Config())
 	a.RegisterAll(
 		// all service registration here
-		production.ServiceImpl(),
+		exampleservice.ServiceImpl(),
 	)
 	// start server
 	if err := a.Run(); err != nil {
