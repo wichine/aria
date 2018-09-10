@@ -33,6 +33,24 @@
 			"revisionTime": "2018-08-27T16:07:36Z"
 		},
 		{
+			"checksumSHA1": "YJ7WR4AVtD2ykYJr+1mTtazkma0=",
+			"path": "github.com/fsouza/go-dockerclient/internal/archive",
+			"revision": "a7b85d61dcf384ef9fea13abaa9fefe5ef00ad25",
+			"revisionTime": "2018-08-27T16:07:36Z"
+		},
+		{
+			"checksumSHA1": "l+Fkt3j/lhaae3/4c9mPwFfEOMU=",
+			"path": "github.com/fsouza/go-dockerclient/internal/jsonmessage",
+			"revision": "a7b85d61dcf384ef9fea13abaa9fefe5ef00ad25",
+			"revisionTime": "2018-08-27T16:07:36Z"
+		},
+		{
+			"checksumSHA1": "vdjeVhnepWyw3H4g9pVTVACDfV0=",
+			"path": "github.com/fsouza/go-dockerclient/internal/term",
+			"revision": "a7b85d61dcf384ef9fea13abaa9fefe5ef00ad25",
+			"revisionTime": "2018-08-27T16:07:36Z"
+		},
+		{
 			"checksumSHA1": "QeKwBtN2df+j+4stw3bQJ6yO4EY=",
 			"path": "github.com/gin-contrib/sse",
 			"revision": "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae",

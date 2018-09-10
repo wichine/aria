@@ -29,9 +29,9 @@ serviceDiscovery:
     # path to the data directory.
     dataDir: ./etcd-data
     # list of URLs to listen on for peer traffic.
-    listenPeerUrls: 127.0.0.1:2380
+    listenPeerUrls: http://0.0.0.0:2380
     # list of URLs to listen on for client traffic.
-    listenClientUrls: 127.0.0.1:2379
+    listenClientUrls: http://0.0.0.0:2379
     # list of this member's peer URLs to advertise to the rest of the cluster.
     initialAdvertisePeerUrls: http://127.0.0.1:2380
     # initial cluster configuration for bootstrapping.
