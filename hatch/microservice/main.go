@@ -3,23 +3,18 @@ package main
 import (
 	aria "aria/hatch/microservice/core"
 	"aria/hatch/microservice/core/config"
+	"aria/hatch/microservice/core/log"
 	"aria/hatch/microservice/core/svcdiscovery"
 	"aria/hatch/microservice/service/otherservice"
 	"aria/hatch/microservice/service/production"
 	"fmt"
 	"github.com/op/go-logging"
-	"os"
 )
 
 var logger *logging.Logger
 
 func init() {
-	stdoutBackend := logging.NewBackendFormatter(
-		logging.NewLogBackend(os.Stdout, "", 0),
-		logging.MustStringFormatter(`%{color}[%{time:2006-01-02 15:04:05.000}] %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`),
-	)
-	logging.SetBackend(stdoutBackend)
-	logger = logging.MustGetLogger("main")
+	logger = log.GetLogger("main")
 }
 
 func main() {
@@ -49,6 +44,7 @@ func main() {
 		// all service registration here
 		production.ServiceImpl(),
 	)
+	logger.Info("=====================")
 	// start server
 	if err := a.Run(); err != nil {
 		panic(err)
