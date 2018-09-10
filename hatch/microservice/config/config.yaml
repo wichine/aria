@@ -1,0 +1,50 @@
+####################################################
+# service discovery config
+####################################################
+service:
+  # which method the service server will serve in, http/grpc
+  type: grpc
+
+  # this address will be registered to service discovery component for
+  # other services to visit
+  address: 127.0.0.1:9090
+
+  # key used to registered to sd
+  serviceKey: /services/example
+
+
+####################################################
+# service discovery config
+####################################################
+serviceDiscovery:
+  enable: true
+
+  # start a etcd server for service discovery before the service start
+  etcdServerOn: true
+
+  # only valid when etcdServerOn is set to true
+  etcdPeerConfig:
+    # human-readable name for this member.
+    name: etcd1
+    # path to the data directory.
+    dataDir: ./etcd-data
+    # list of URLs to listen on for peer traffic.
+    listenPeerUrls: http://0.0.0.0:2380
+    # list of URLs to listen on for client traffic.
+    listenClientUrls: http://0.0.0.0:2379
+    # list of this member's peer URLs to advertise to the rest of the cluster.
+    initialAdvertisePeerUrls: http://127.0.0.1:2380
+    # initial cluster configuration for bootstrapping.
+    initialCluster: "etcd1=http://127.0.0.1:2380"
+    # initial cluster state ('new' or 'existing').
+    initialClusterState: new
+    # initial cluster token for the etcd cluster during bootstrap.
+    # Specifying this can protect you from unintended cross-cluster interaction when running multiple clusters.
+    initialClusterToken: etcd-cluster-1
+    # list of this member's client URLs to advertise to the public.
+    # The client URLs advertised should be accessible to machines that talk to etcd cluster. etcd client libraries parse these URLs to connect to the cluster.
+    advertiseClientUrls: http://127.0.0.1:2379
+
+  # servers of etcd cluster this service used to visit
+  etcdServers:
+    - 127.0.0.1:2379

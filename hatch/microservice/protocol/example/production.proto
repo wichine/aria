@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package example;
+
+service ProductionService {
+    rpc AddProduction (AddProductionRequest) returns (AddProductionResponse) {}
+    rpc GetAllProduction (GetAllProductionRequest) returns (GetAllProductionResponse) {}
+}
+
+message AddProductionRequest {
+    string type = 1;
+    string code = 2;
+    string name = 3;
+    int64 valueDate = 4;
+    int64 dueDate = 5;
+    int64 annualRate = 6;
+}
+
+message AddProductionResponse {
+    int64 status = 1;
+    string msg = 2;
+}
+
+message GetAllProductionRequest {
+
+}
+
+message GetAllProductionResponse {
+    int64 status = 1;
+    repeated Production production = 2;
+}
+
+message Production {
+    string type = 1;
+    string code = 2;
+    string name = 3;
+    int64 valueDate = 4;
+    int64 dueDate = 5;
+    int64 annualRate = 6;
+}
