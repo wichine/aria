@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"fmt"
@@ -72,14 +72,14 @@ func GatewayCmd() *cobra.Command {
 	return gatewayCmd
 }
 
-func SelfbuildCmd() *cobra.Command {
+func SelfbuildCmd(version string) *cobra.Command {
 	if selfbuildCmd != nil {
 		return selfbuildCmd
 	}
 	selfbuildCmd = &cobra.Command{
 		Use: "selfbuild",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return selfBuild(args)
+			return selfBuild(version, args)
 		},
 	}
 	return selfbuildCmd
@@ -128,7 +128,7 @@ func newApiGateway(projectName string) error {
 }
 
 // not open for user, just for the maintainer
-func selfBuild(args []string) error {
+func selfBuild(version string, args []string) error {
 	var err error
 	if len(args) < 1 {
 		return fmt.Errorf("No argument assigned!")
@@ -139,7 +139,7 @@ func selfBuild(args []string) error {
 	case "restore":
 		err = RestoreAssets()
 	case "version":
-		fmt.Println(APP_VERSION)
+		fmt.Println(version)
 		return nil
 	default:
 		return fmt.Errorf("Unsupported argument: %s", args[0])

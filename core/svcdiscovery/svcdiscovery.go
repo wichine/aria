@@ -1,7 +1,7 @@
 package svcdiscovery
 
 import (
-	"aria/hatch/microservice/core/config"
+	"aria/core/config"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
 )

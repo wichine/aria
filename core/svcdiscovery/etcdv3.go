@@ -1,7 +1,7 @@
 package svcdiscovery
 
 import (
-	"aria/hatch/microservice/core/log"
+	"aria/core/log"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"

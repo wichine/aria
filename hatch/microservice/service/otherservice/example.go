@@ -1,7 +1,7 @@
 package otherservice
 
 import (
-	"aria/hatch/microservice/core/svcdiscovery"
+	"aria/core/svcdiscovery"
 	pb "aria/hatch/microservice/protocol/example"
 	"aria/hatch/microservice/service/exampleservice"
 	"context"

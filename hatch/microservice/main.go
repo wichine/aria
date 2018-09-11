@@ -1,10 +1,10 @@
 package main
 
 import (
-	aria "aria/hatch/microservice/core"
-	"aria/hatch/microservice/core/config"
-	"aria/hatch/microservice/core/log"
-	"aria/hatch/microservice/core/svcdiscovery"
+	aria "aria/core"
+	"aria/core/config"
+	"aria/core/log"
+	"aria/core/svcdiscovery"
 	"aria/hatch/microservice/service/exampleservice"
 	"aria/hatch/microservice/service/otherservice"
 	"fmt"
