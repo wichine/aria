@@ -1,7 +1,7 @@
 package exampleservice
 
 import (
-	"aria/hatch/microservice/core"
+	"aria/core"
 	pb "aria/hatch/microservice/protocol/example"
 	"context"
 	"fmt"

@@ -1,9 +1,9 @@
 package core
 
 import (
-	"aria/hatch/microservice/core/config"
-	"aria/hatch/microservice/core/log"
-	"aria/hatch/microservice/core/svcdiscovery"
+	"aria/core/config"
+	"aria/core/log"
+	"aria/core/svcdiscovery"
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"github.com/op/go-logging"

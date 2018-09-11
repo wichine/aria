@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"archive/tar"
@@ -20,8 +20,8 @@ var exclude = map[string]bool{
 }
 
 var assetsPath = "./hatch"
-var assetsFileName = "assets.go"
-var tempTemplateFile = ".assets.go.temp"
+var assetsFileName = "./cli/assets.go"
+var tempTemplateFile = "./cli/.assets.go.temp"
 
 // compress aria assets and inject to assets.go
 func InjectAssets() error {

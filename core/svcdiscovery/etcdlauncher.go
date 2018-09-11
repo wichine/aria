@@ -1,7 +1,7 @@
 package svcdiscovery
 
 import (
-	"aria/hatch/microservice/core/config"
+	"aria/core/config"
 	"context"
 	"fmt"
 	"github.com/fsouza/go-dockerclient"

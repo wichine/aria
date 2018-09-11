@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "RMMbSIy7KWqAVZDsK26BuotrOxg=",
+			"path": "aria/core/svcdiscovery",
+			"revision": "48e5208e9f4f286618129adc3f7ead0cfd1e3909",
+			"revisionTime": "2018-09-10T08:24:46Z"
+		},
+		{
 			"checksumSHA1": "guScL2pCAVSxcVfMpmK9H8IsEZ0=",
 			"path": "github.com/afex/hystrix-go/hystrix",
 			"revision": "fa1af6a1f4f56e0e50d427fe901cd604d8c6fb8a",
