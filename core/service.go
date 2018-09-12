@@ -7,7 +7,7 @@ type Service struct {
 	Endpoint   endpoint.Endpoint
 }
 
-func (s *Service) WithMiddleware(ms ...endpoint.Middleware) {
+func (s *Service) AddMiddleware(ms ...endpoint.Middleware) {
 	s.Middleware = append(ms, s.Middleware...)
 }
 
