@@ -3,30 +3,6 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "z05R9A4/yT0jFguejt+yGqNbHJE=",
-			"path": "aria/core",
-			"revision": "f720ed4d7f5810af18c8fc60d4fef0ed826f58bd",
-			"revisionTime": "2018-09-11T06:46:58Z"
-		},
-		{
-			"checksumSHA1": "kRm6t5/D1mxftbwPYs06jBXETe8=",
-			"path": "aria/core/config",
-			"revision": "f720ed4d7f5810af18c8fc60d4fef0ed826f58bd",
-			"revisionTime": "2018-09-11T06:46:58Z"
-		},
-		{
-			"checksumSHA1": "ynBP/v4S0WtEmp5uCdTJsHcGzHU=",
-			"path": "aria/core/log",
-			"revision": "f720ed4d7f5810af18c8fc60d4fef0ed826f58bd",
-			"revisionTime": "2018-09-11T06:46:58Z"
-		},
-		{
-			"checksumSHA1": "RMMbSIy7KWqAVZDsK26BuotrOxg=",
-			"path": "aria/core/svcdiscovery",
-			"revision": "48e5208e9f4f286618129adc3f7ead0cfd1e3909",
-			"revisionTime": "2018-09-10T08:24:46Z"
-		},
-		{
 			"checksumSHA1": "Aqy8/FoAIidY/DeQ5oTYSZ4YFVc=",
 			"path": "github.com/Nvveen/Gotty",
 			"revision": "cd527374f1e5bff4938207604a14f2e38a9cf512",

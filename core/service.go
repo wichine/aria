@@ -1,6 +1,8 @@
 package core
 
-import "github.com/go-kit/kit/endpoint"
+import (
+	"github.com/go-kit/kit/endpoint"
+)
 
 type Service struct {
 	Middleware []endpoint.Middleware
