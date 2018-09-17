@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"aria/core/config"
 	"aria/core/svcdiscovery"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
@@ -32,7 +33,7 @@ func WrapMiddleware(serviceKey string, connectors ...Connector) error {
 }
 
 func makeDefaultMiddleware(serviceKey string, factory sd.Factory) (endpoint.Middleware, error) {
-	sd, err := svcdiscovery.GetEtcdServiceDiscoveryInstance()
+	sd, err := svcdiscovery.GetEtcdServiceDiscoveryInstance(config.Config().EtcdServers)
 	if err != nil {
 		return nil, fmt.Errorf("getProxyEndpoint get etcd instance error: %s", err)
 	}

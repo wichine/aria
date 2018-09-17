@@ -66,7 +66,7 @@ func (a *Aria) Run() error {
 	if a.Config.ServiceDiscovery.Enable {
 		a.logger.Debugf("Start %s service discovery ", "etcd")
 		// register to etcd service discovery center
-		s, err := svcdiscovery.GetEtcdServiceDiscoveryInstance()
+		s, err := svcdiscovery.GetEtcdServiceDiscoveryInstance(a.Config.EtcdServers)
 		if err != nil {
 			panic(err)
 		}

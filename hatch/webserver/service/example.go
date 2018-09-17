@@ -1,14 +1,13 @@
-package otherservice
+package service
 
 import (
-	"aria/core/config"
 	"aria/core/svcdiscovery"
-	pb "aria/hatch/microservice/protocol/example"
-	"aria/hatch/microservice/service/exampleservice"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
 	kitsd "github.com/go-kit/kit/sd"
+	pb "service_generated_by_aria/protocol/example"
+	"service_generated_by_aria/service/exampleservice"
 )
 
 // FIXME: 添加自己需要的微服务
@@ -24,9 +23,9 @@ type serviceRegistrar struct {
 }
 
 // Important: must call at start of main
-func InitOtherService() error {
+func InitService(servers []string) error {
 	// get the global service discovery instance
-	sd, err := svcdiscovery.GetEtcdServiceDiscoveryInstance(config.Config().EtcdServers)
+	sd, err := svcdiscovery.GetEtcdServiceDiscoveryInstance(servers)
 	if err != nil {
 		return fmt.Errorf("Get etcd service discovery instance error: %s", err)
 	}

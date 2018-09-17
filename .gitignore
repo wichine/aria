@@ -2,3 +2,7 @@
 .idea
 
 etcd-data
+
+hatch/webserver/docs
+hatch/webserver/swagger/*.json
+hatch/webserver/swagger/*.yaml

@@ -39,7 +39,7 @@ service project frame based on go-kit`,
 		Version: APP_VERSION,
 	}
 
-	rootCmd.AddCommand(cli.ServiceCmd(), cli.GatewayCmd(), cli.SelfbuildCmd(APP_VERSION))
+	rootCmd.AddCommand(cli.ServiceCmd(), cli.GatewayCmd(), cli.WebserverCmd(), cli.SelfbuildCmd(APP_VERSION))
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

@@ -11,6 +11,7 @@ import (
 var serviceCmd *cobra.Command
 var selfbuildCmd *cobra.Command
 var gatewayCmd *cobra.Command
+var webserverCmd *cobra.Command
 
 func ServiceCmd() *cobra.Command {
 	if serviceCmd != nil {
@@ -72,6 +73,36 @@ func GatewayCmd() *cobra.Command {
 	return gatewayCmd
 }
 
+func WebserverCmd() *cobra.Command {
+	if webserverCmd != nil {
+		return webserverCmd
+	}
+	var projectName string
+	createSubCmd := &cobra.Command{
+		Use:   "create",
+		Short: `Create an Web Server frame in your GOPATH. Use "-n" to assign your project name`,
+		Long:  "Command used to create a Web Server frame in your GOPATH",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if projectName == "" {
+				return fmt.Errorf("Project name not assigned.")
+			}
+			return newWebserver(projectName)
+
+		},
+	}
+	createSubCmd.Flags().StringVarP(&projectName, "name", "n", "", "The name of your project.")
+	webserverCmd = &cobra.Command{
+		Use:   "webserver",
+		Short: "Command of Web Server",
+		Long:  "Command of Web Server",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
+	}
+	webserverCmd.AddCommand(createSubCmd)
+	return webserverCmd
+}
+
 func SelfbuildCmd(version string) *cobra.Command {
 	if selfbuildCmd != nil {
 		return selfbuildCmd
@@ -88,7 +119,7 @@ func SelfbuildCmd(version string) *cobra.Command {
 func newMicroService(projectName string) error {
 	printLogo()
 	fmt.Println("Start creating a micro service project ...")
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	gopath := os.Getenv("GOPATH")
 	fileInfo, err := os.Stat(gopath)
@@ -109,7 +140,7 @@ func newMicroService(projectName string) error {
 func newApiGateway(projectName string) error {
 	printLogo()
 	fmt.Println("Start creating an API gateway project ...")
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	gopath := os.Getenv("GOPATH")
 	fileInfo, err := os.Stat(gopath)
@@ -120,6 +151,27 @@ func newApiGateway(projectName string) error {
 		return fmt.Errorf("Error: can't open GOPATH(%s) which is not a directory.")
 	}
 	err = UnpackAssets(APIGATEWAY_GzFile, projectName, filepath.Join(gopath, "src"), "apigateway")
+	if err != nil {
+		return fmt.Errorf("Error: %s", err)
+	}
+	fmt.Printf("\nSuccessfully create new project [%s] in your GOPATH(%s).\n", projectName, gopath)
+	return nil
+}
+
+func newWebserver(projectName string) error {
+	printLogo()
+	fmt.Println("Start creating an Web Server project ...")
+	time.Sleep(1 * time.Second)
+
+	gopath := os.Getenv("GOPATH")
+	fileInfo, err := os.Stat(gopath)
+	if err != nil {
+		return fmt.Errorf("Error: stat GOPATH( %s ) error: %s", gopath, err)
+	}
+	if !fileInfo.IsDir() {
+		return fmt.Errorf("Error: can't open GOPATH(%s) which is not a directory.")
+	}
+	err = UnpackAssets(WEBSERVER_GzFile, projectName, filepath.Join(gopath, "src"), "webserver")
 	if err != nil {
 		return fmt.Errorf("Error: %s", err)
 	}

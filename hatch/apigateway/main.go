@@ -40,7 +40,7 @@ func main() {
 	}
 
 	// register all service to sd
-	sd, err := svcdiscovery.GetEtcdServiceDiscoveryInstance()
+	sd, err := svcdiscovery.GetEtcdServiceDiscoveryInstance(config.Config().EtcdServers)
 	if err != nil {
 		panic(err)
 	}

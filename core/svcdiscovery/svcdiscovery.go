@@ -1,7 +1,6 @@
 package svcdiscovery
 
 import (
-	"aria/core/config"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
 )
@@ -14,14 +13,14 @@ type SvcDiscovery interface {
 
 var globalSD SvcDiscovery
 
-func GetEtcdServiceDiscoveryInstance() (SvcDiscovery, error) {
+func GetEtcdServiceDiscoveryInstance(servers []string) (SvcDiscovery, error) {
 	var err error
 	if globalSD != nil {
 		return globalSD, nil
 	}
 
 	globalSD, err = NewEtcdServiceDiscovery(EtcdConfig{
-		Servers: config.Config().EtcdServers,
+		Servers: servers,
 		Options: DefaultEtcdOptions,
 	})
 	if err != nil {
