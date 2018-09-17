@@ -17,6 +17,7 @@ var exclude = map[string]bool{
 	".DS_Store": true,
 	".idea":     true,
 	".git":      true,
+	"etcd-data": true,
 }
 
 var assetsPath = "./hatch"
