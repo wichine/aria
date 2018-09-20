@@ -49,13 +49,13 @@ func (sr *ServiceProxy) initialize(sd svcdiscovery.SvcDiscovery) error {
 	return nil
 }
 
-func (sr *ServiceProxy) serviceFullName() string {
+func (sr *ServiceProxy) GetServiceFullName() string {
 	return fmt.Sprintf("%s -> %s", sr.key, sr.method)
 }
 
 func (sr *ServiceProxy) Call(request interface{}) (response interface{}, err error) {
 	if !sr.initialized {
-		err = fmt.Errorf("service [%s] not be initialized.", sr.serviceFullName())
+		err = fmt.Errorf("service [%s] not be initialized.", sr.GetServiceFullName())
 		return
 	}
 	response, err = sr.endpoint(context.TODO(), request)
@@ -78,7 +78,7 @@ func InitServiceProxy(servers []string) error {
 		if err != nil {
 			return fmt.Errorf("init service proxy error: %s", err)
 		}
-		serviceNames = append(serviceNames, fmt.Sprintf("\n    %s", sr.serviceFullName()))
+		serviceNames = append(serviceNames, fmt.Sprintf("\n    %s", sr.GetServiceFullName()))
 	}
 	serviceNames = append(serviceNames, "\n")
 	logger.Infof("Service proxy initialized: %v", serviceNames)
