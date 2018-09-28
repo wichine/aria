@@ -10,8 +10,10 @@ service:
   address: 127.0.0.1:9090
 
   # key used to registered to sd
-  # apigateway use this as a prefix of service key
-  serviceKey: /apigateway
+  serviceKey: /services/apigateway
+  # other service key used for subscribe from sd
+  serviceProxy:
+    example: /services/example
 
 
 ####################################################

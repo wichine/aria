@@ -1,9 +1,10 @@
 package config
 
 type Service struct {
-	Type       string
-	Address    string
-	ServiceKey string
+	Type         string
+	Address      string
+	ServiceKey   string
+	ServiceProxy map[string]string
 }
 
 type ServiceDiscovery struct {

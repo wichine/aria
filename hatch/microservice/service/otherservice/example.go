@@ -1,23 +1,27 @@
 package otherservice
 
 import (
-	"aria/core/config"
 	"aria/core/svcproxy"
 	"aria/hatch/microservice/service/exampleservice"
 )
 
-// Step1: create service proxy objects
 var exampleKey = "/services/example"
-var AddProduction = svcproxy.NewServiceProxy(exampleKey, "AddProduction", exampleservice.AddProductionImpl().Proxy())
-var GetAllProduction = svcproxy.NewServiceProxy(exampleKey, "GetAllProduction", exampleservice.GetAllProductionImpl().Proxy())
+var Example exampleNameSpace
 
-func init() {
-	// Step2: register service proxy object to global map
-	svcproxy.RegisterServices(AddProduction, GetAllProduction)
+type exampleNameSpace struct {
+	AddProduction    *svcproxy.ServiceProxy
+	GetAllProduction *svcproxy.ServiceProxy
 }
 
-// Step3: call this method to subcribe from service discovery component
-// Important: must call at start of main
-func InitOtherService() error {
-	return svcproxy.InitServiceProxy(config.Config().EtcdServers)
+func init() {
+	// Step1: create service proxy objects
+	Example = exampleNameSpace{
+		svcproxy.NewServiceProxy(exampleKey, "AddProduction", exampleservice.AddProductionImpl().Proxy()),
+		svcproxy.NewServiceProxy(exampleKey, "GetAllProduction", exampleservice.GetAllProductionImpl().Proxy()),
+	}
+	// Step2: register service proxy object to global map
+	svcproxy.RegisterServices(
+		Example.AddProduction,
+		Example.GetAllProduction,
+	)
 }

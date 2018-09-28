@@ -1,8 +1,9 @@
-package middleware
+package svcproxy
 
 import (
 	"aria/core/config"
 	"aria/core/svcdiscovery"
+	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
@@ -15,18 +16,20 @@ type Connector interface {
 
 var isServiceWrapMiddleware = map[string]bool{}
 
-func WrapMiddleware(serviceKey string, connectors ...Connector) error {
+func ConvertServiceToProxy(serviceKey string, connectors ...Connector) error {
 	if isServiceWrapMiddleware[serviceKey] {
 		return fmt.Errorf("service [%s] already wrap middleware", serviceKey)
 	}
 	for _, connector := range connectors {
 		// default middleware
-		ep, err := makeDefaultMiddleware(serviceKey, connector.Proxy())
+		dmw, err := makeDefaultMiddleware(serviceKey, connector.Proxy())
 		if err != nil {
 			return fmt.Errorf("add middleware error: %s", err)
 		}
-		connector.AddMiddleware(ep)
 		// TODO: add other middlewares
+		connector.AddMiddleware(logMiddleware)
+		// must add default middleware at the end
+		connector.AddMiddleware(dmw)
 	}
 	isServiceWrapMiddleware[serviceKey] = true
 	return nil
@@ -45,4 +48,12 @@ func makeDefaultMiddleware(serviceKey string, factory sd.Factory) (endpoint.Midd
 		return proxyEndpoint
 	}
 	return mw, nil
+}
+
+func logMiddleware(ep endpoint.Endpoint) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		response, err = ep(ctx, request)
+		logger.Debugf("[Proxy Log] mothod: %v, request: %v, response: %v, error: %s", ctx.Value("FullMethod"), request, response, err)
+		return
+	}
 }

@@ -1,23 +1,33 @@
 package service
 
-import "google.golang.org/grpc"
+import (
+	"aria/core/config"
+	"aria/core/log"
+	"google.golang.org/grpc"
+)
 
-var registerFuncs = map[string]func(serviceKey string, server *grpc.Server) error{}
+var servicesFactory = map[string]func(string) Service{}
+var logger = log.GetLogger("apigateway")
 
-func RegisterAllService(server *grpc.Server) error {
-	for serviceKey, register := range registerFuncs {
-		err := register(serviceKey, server)
-		if err != nil {
-			return err
+type Service interface {
+	newService() (interface{}, error)
+	RegisterService(server *grpc.Server) error
+	GetKey() string
+}
+
+func RegisterAllService(server *grpc.Server, cfg config.Service) error {
+	for name, key := range cfg.ServiceProxy {
+		if factory, ok := servicesFactory[name]; ok {
+			service := factory(key)
+			err := service.RegisterService(server)
+			if err != nil {
+				logger.Errorf("register service [%s] to grpc error: %s", name, err)
+				return err
+			}
+			logger.Infof("register service [%s] to grpc server.", service.GetKey())
+		} else {
+			logger.Errorf("service factory of [%s] not found in service factory map!", name)
 		}
 	}
 	return nil
-}
-
-func GetAllServiceKeys() []string {
-	keys := []string{}
-	for key, _ := range registerFuncs {
-		keys = append(keys, key)
-	}
-	return keys
 }

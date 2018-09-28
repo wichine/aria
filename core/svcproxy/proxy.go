@@ -13,13 +13,6 @@ var logger = log.GetLogger("ariaServiceProxy")
 
 var serviceMap = map[string]*ServiceProxy{}
 
-// Step2: register service proxy object to global map
-func RegisterServices(services ...*ServiceProxy) {
-	for _, s := range services {
-		serviceMap[s.method] = s
-	}
-}
-
 type ServiceProxy struct {
 	key         string
 	method      string
@@ -60,6 +53,13 @@ func (sr *ServiceProxy) Call(request interface{}) (response interface{}, err err
 	}
 	response, err = sr.endpoint(context.TODO(), request)
 	return
+}
+
+// Step2: register service proxy object to global map
+func RegisterServices(services ...*ServiceProxy) {
+	for _, s := range services {
+		serviceMap[s.method] = s
+	}
 }
 
 // Step3: call this method to subcribe from service discovery component

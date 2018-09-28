@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
 	"reflect"
 )
@@ -41,4 +42,14 @@ func flatten(k string, m *[]string, v reflect.Value) {
 	default:
 		*m = append(*m, fmt.Sprintf("%s = %v", k, v))
 	}
+}
+
+func GetStructString(s interface{}) string {
+	params := Flatten(s)
+	var buffer bytes.Buffer
+	for i := range params {
+		buffer.WriteString("\n\t")
+		buffer.WriteString(params[i])
+	}
+	return buffer.String()
 }

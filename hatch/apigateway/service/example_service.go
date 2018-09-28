@@ -1,34 +1,51 @@
 package service
 
 import (
-	"aria/hatch/apigateway/middleware"
+	"aria/core/svcproxy"
 	"fmt"
 	"google.golang.org/grpc"
 	"service_generated_by_aria/service/exampleservice"
 )
 
 func init() {
-	registerFuncs["/service/example"] = RegisterService
+	// FIXME: the name should be one key of config.service.serviceProxy map
+	servicesFactory["example"] = NewExampleService
 }
 
-func NewExampleService(serviceKey string) (*exampleservice.ExampleService, error) {
-	as := exampleservice.AddProductionImpl()
-	gs := exampleservice.GetAllProductionImpl()
+type ExampleServie struct {
+	// serviceName should be unique
+	serviceKey string
+}
+
+func NewExampleService(key string) Service {
+	return &ExampleServie{key}
+}
+
+func (es *ExampleServie) newService() (interface{}, error) {
+	// FIXME: create a service
+	s := exampleservice.ServiceImpl()
 
 	// Important: must call this method or the proxy function will be invalid
-	middleware.WrapMiddleware(serviceKey, as, gs)
-
-	return &exampleservice.ExampleService{
-		AddProductionService:    as,
-		GetAllProductionService: gs,
-	}, nil
+	err := svcproxy.ConvertServiceToProxy(es.serviceKey, s.AddProductionService, s.GetAllProductionService)
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
-func RegisterService(serviceKey string, server *grpc.Server) error {
-	s, err := NewExampleService(serviceKey)
+func (es *ExampleServie) RegisterService(server *grpc.Server) error {
+	s, err := es.newService()
 	if err != nil {
-		return fmt.Errorf("create example service error: %s", err)
+		return fmt.Errorf("RegisterService create new service error: %s", err)
 	}
-	s.Register(server)
-	return nil
+	// FIXME: convert interface to concrete type
+	if rs, ok := s.(*exampleservice.ExampleService); ok {
+		rs.Register(server)
+		return nil
+	}
+	return fmt.Errorf("RegisterService convert type error")
+}
+
+func (es *ExampleServie) GetKey() string {
+	return es.serviceKey
 }

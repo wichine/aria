@@ -11,6 +11,9 @@ service:
 
   # key used to registered to sd
   serviceKey: /services/example
+  # other service key used for subscribe from sd
+  serviceProxy:
+    example: /services/example
 
 
 ####################################################
