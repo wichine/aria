@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "aria/hatch/microservice/protocol/production"
+	pb "aria/hatch/microservice/protocol/example"
 	"context"
 	"fmt"
 	"google.golang.org/grpc"

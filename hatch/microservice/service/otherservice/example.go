@@ -5,23 +5,18 @@ import (
 	"aria/hatch/microservice/service/exampleservice"
 )
 
-var exampleKey = "/services/example"
 var Example exampleNameSpace
 
+// field name should be as same as rpc method
 type exampleNameSpace struct {
 	AddProduction    *svcproxy.ServiceProxy
 	GetAllProduction *svcproxy.ServiceProxy
 }
 
 func init() {
-	// Step1: create service proxy objects
-	Example = exampleNameSpace{
-		svcproxy.NewServiceProxy(exampleKey, "AddProduction", exampleservice.AddProductionImpl().Proxy()),
-		svcproxy.NewServiceProxy(exampleKey, "GetAllProduction", exampleservice.GetAllProductionImpl().Proxy()),
+	// the map key must be a key in config.service.serviceProxy
+	initFuncs["example"] = func(serviceKey string) {
+		// use the global namespace var as parameter
+		svcproxy.InitializeAllServiceInOneNameSpace(&Example, serviceKey, exampleservice.ServiceImpl())
 	}
-	// Step2: register service proxy object to global map
-	svcproxy.RegisterServices(
-		Example.AddProduction,
-		Example.GetAllProduction,
-	)
 }
