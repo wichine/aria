@@ -19,9 +19,12 @@ type ServiceDiscovery struct {
 	EtcdServers []string
 }
 
+type Services map[string]string
+
 type ServerConfig struct {
 	Server
 	Swagger
+	Services
 	ServiceDiscovery
 }
 

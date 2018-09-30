@@ -5,18 +5,18 @@ import (
 	"service_generated_by_aria/service/exampleservice"
 )
 
-// Step1: create service proxy objects
-var exampleKey = "/services/example"
-var AddProduction = svcproxy.NewServiceProxy(exampleKey, "AddProduction", exampleservice.AddProductionImpl().Proxy())
-var GetAllProduction = svcproxy.NewServiceProxy(exampleKey, "GetAllProduction", exampleservice.GetAllProductionImpl().Proxy())
+var Example exampleNameSpace
 
-func init() {
-	// Step2: register service proxy object to global map
-	svcproxy.RegisterServices(AddProduction, GetAllProduction)
+// field name should be as same as rpc method
+type exampleNameSpace struct {
+	AddProduction    *svcproxy.ServiceProxy
+	GetAllProduction *svcproxy.ServiceProxy
 }
 
-// Step3: call this method to subcribe from service discovery component
-// Important: must call at start of main
-func InitService(servers []string) error {
-	return svcproxy.InitServiceProxy(servers)
+func init() {
+	// the map key must be a key in config.service.serviceProxy
+	initFuncs["example"] = func(serviceKey string) {
+		// use the global namespace var as parameter
+		svcproxy.InitializeAllServiceInOneNameSpace(&Example, serviceKey, exampleservice.ServiceImpl())
+	}
 }

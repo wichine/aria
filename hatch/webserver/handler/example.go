@@ -52,7 +52,7 @@ func AddProduction(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, AddProductionResponse{500, err.Error()})
 		return
 	}
-	resp, err := service.AddProduction.Call(&example.AddProductionRequest{
+	resp, err := service.Example.AddProduction.Call(&example.AddProductionRequest{
 		Type:       request.Type,
 		Code:       request.Code,
 		Name:       request.Name,
@@ -77,7 +77,7 @@ func AddProduction(c *gin.Context) {
 func GetProduction(c *gin.Context) {
 	id := c.Param("id")
 	if id == "all" {
-		resp, err := service.GetAllProduction.Call(&example.GetAllProductionRequest{})
+		resp, err := service.Example.GetAllProduction.Call(&example.GetAllProductionRequest{})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, fmt.Sprintf("call production service error: %s", err))
 			return

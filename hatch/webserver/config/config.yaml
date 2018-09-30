@@ -5,6 +5,9 @@ swagger:
   generateDocs: true
   swaggerServerOn: true
 
+services:
+  example: /services/apigateway
+
 serviceDiscovery:
   # servers of etcd cluster this service used to visit
   etcdServers:
