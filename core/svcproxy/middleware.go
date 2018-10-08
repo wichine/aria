@@ -57,3 +57,8 @@ func logMiddleware(ep endpoint.Endpoint) endpoint.Endpoint {
 		return
 	}
 }
+
+type nilConnector struct{}
+
+func (*nilConnector) AddMiddleware(...endpoint.Middleware) {}
+func (*nilConnector) Proxy() sd.Factory                    { return nil }
