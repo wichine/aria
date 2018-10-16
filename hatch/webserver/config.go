@@ -2,7 +2,7 @@ package main
 
 import (
 	"aria/core"
-	"aria/core/config"
+	ariaCfg "aria/core/config"
 	"fmt"
 )
 
@@ -26,6 +26,7 @@ type ServerConfig struct {
 	Swagger
 	Services
 	ServiceDiscovery
+	ariaCfg.Statistic
 }
 
 var globalConfig *ServerConfig
@@ -35,7 +36,7 @@ const envPrefix = "WEB"
 
 func InitConfig(configFile string) error {
 	globalConfig = &ServerConfig{}
-	err := config.ParseConfig(envPrefix, configFile, globalConfig)
+	err := ariaCfg.ParseConfig(envPrefix, configFile, globalConfig)
 	if err != nil {
 		return fmt.Errorf("init config parsing config error: %s", err)
 	}

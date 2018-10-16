@@ -4,7 +4,9 @@ import (
 	aria "aria/core"
 	"aria/core/config"
 	"aria/core/log"
+	"aria/core/middleware"
 	"aria/core/svcdiscovery"
+	"aria/core/tools"
 	"aria/hatch/microservice/service/exampleservice"
 	"aria/hatch/microservice/service/otherservice"
 	"fmt"
@@ -38,11 +40,25 @@ func main() {
 		}
 	}
 
+	err := tools.InitializeZipkin(
+		config.Config().Statistic.Tracing.Zipkin.Url,
+		config.Config().ServiceKey,
+		config.Config().Address,
+		config.Config().Statistic.Enable,
+	)
+	if err != nil {
+		panic(fmt.Sprintf("initialize zipkin error: %s", err))
+	}
+
 	// create service
 	a := aria.New(config.Config())
 	a.RegisterAll(
 		// all service registration here
-		exampleservice.ServiceImpl(),
+		middleware.WithMiddleware(
+			exampleservice.ServiceImpl(),
+			middleware.LogMiddleware(logger),
+			middleware.ZipkinMiddleware,
+		),
 	)
 	logger.Info("=====================")
 	// start server

@@ -46,13 +46,16 @@ type GetProductionResponse struct {
 // @Failure 500 {object} handler.AddProductionResponse
 // @Router /production/add [post]
 func AddProduction(c *gin.Context) {
+	var err error
+	var resp interface{}
+	defer LogForError("AddProduction", &err)
 	request := &AddProductionRequest{}
-	err := c.ShouldBindJSON(request)
+	err = c.ShouldBindJSON(request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, AddProductionResponse{500, err.Error()})
 		return
 	}
-	resp, err := service.Example.AddProduction.Call(&example.AddProductionRequest{
+	resp, err = CallService(c, service.Example.AddProduction, &example.AddProductionRequest{
 		Type:       request.Type,
 		Code:       request.Code,
 		Name:       request.Name,
@@ -60,6 +63,7 @@ func AddProduction(c *gin.Context) {
 		DueDate:    request.DueDate,
 		AnnualRate: request.AnnualRate,
 	})
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, AddProductionResponse{500, fmt.Sprintf("call prduction service error: %s", err)})
 		return
@@ -75,9 +79,12 @@ func AddProduction(c *gin.Context) {
 // @Failure 500 {object} handler.GetProductionResponse
 // @Router /production/get/{id} [get]
 func GetProduction(c *gin.Context) {
+	var err error
+	var resp interface{}
+	defer LogForError("AddProduction", &err)
 	id := c.Param("id")
 	if id == "all" {
-		resp, err := service.Example.GetAllProduction.Call(&example.GetAllProductionRequest{})
+		resp, err = CallService(c, service.Example.GetAllProduction, &example.GetAllProductionRequest{})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, fmt.Sprintf("call production service error: %s", err))
 			return

@@ -2,6 +2,7 @@ package exampleservice
 
 import (
 	"aria/core"
+	"aria/core/tools"
 	pb "aria/hatch/microservice/protocol/example"
 	"context"
 	"fmt"
@@ -29,10 +30,13 @@ func GetAllProductionImpl() *GetAllProductionService {
 		},
 	}
 	s.Endpoint = func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		span := tools.GetZipkinSpanFromContext(ctx)
+		span.SetName("db:query")
 		rawResp, err := s.Do(ctx)
 		if err != nil {
 			return nil, err
 		}
+		span.Finish()
 		var productions []*pb.Production
 		for _, p := range rawResp {
 			prod := &pb.Production{
@@ -53,10 +57,13 @@ func GetAllProductionImpl() *GetAllProductionService {
 
 // Serve grpc handler
 func (gas *GetAllProductionService) GetAllProduction(ctx context.Context, request *pb.GetAllProductionRequest) (response *pb.GetAllProductionResponse, err error) {
+	span := tools.GetZipkinSpanFromGrpcHeader(ctx)
+	span.SetName("call endpoint")
 	r, err := gas.Compose()(ctx, request)
 	if err != nil {
 		return nil, err
 	}
+	span.Finish()
 	// coercion response
 	res := r.(*pb.GetAllProductionResponse)
 	return res, nil

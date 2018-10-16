@@ -12,3 +12,9 @@ serviceDiscovery:
   # servers of etcd cluster this service used to visit
   etcdServers:
     - 127.0.0.1:2379
+
+statistic:
+  enable: false
+  tracing:
+    zipkin:
+      url: http://localhost:9411/api/v2/spans

@@ -5,8 +5,8 @@ import (
 	"aria/core/config"
 	"aria/core/log"
 	"aria/core/svcdiscovery"
+	"aria/core/tools"
 	"aria/hatch/apigateway/service"
-	"context"
 	"fmt"
 	"google.golang.org/grpc"
 	"net"
@@ -21,6 +21,15 @@ func main() {
 		panic(err)
 	}
 	logger.Infof("Config: %s", core.GetStructString(config.Config()))
+	err = tools.InitializeZipkin(
+		config.Config().Statistic.Tracing.Zipkin.Url,
+		config.Config().ServiceKey,
+		config.Config().Address,
+		config.Config().Statistic.Enable,
+	)
+	if err != nil {
+		logger.Errorf("Initialize zipkin error: %s", err)
+	}
 
 	port := strings.Split(config.Config().Address, ":")[1]
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
@@ -28,7 +37,7 @@ func main() {
 		panic(err)
 	}
 
-	server := grpc.NewServer(withLog())
+	server := grpc.NewServer()
 	service.RegisterAllService(server, config.Config().Service)
 
 	// start etcd if needed
@@ -58,11 +67,4 @@ func main() {
 	if err := server.Serve(lis); err != nil {
 		panic(err)
 	}
-}
-
-func withLog() grpc.ServerOption {
-	return grpc.UnaryInterceptor(func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		logger.Infof("receive rpc call: %s", info.FullMethod)
-		return handler(context.WithValue(ctx, "FullMethod", info.FullMethod), req)
-	})
 }

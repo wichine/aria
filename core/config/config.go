@@ -26,7 +26,21 @@ type EtcdConfig struct {
 	AdvertiseClientUrls      string
 }
 
+type Statistic struct {
+	Enable  bool
+	Tracing TracingOption
+}
+
+type TracingOption struct {
+	Zipkin ZipkinConfig
+}
+
+type ZipkinConfig struct {
+	Url string
+}
+
 type AriaConfig struct {
 	Service
 	ServiceDiscovery
+	Statistic
 }

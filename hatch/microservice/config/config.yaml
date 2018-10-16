@@ -7,7 +7,7 @@ service:
 
   # this address will be registered to service discovery component for
   # other services to visit
-  address: 127.0.0.1:9090
+  address: 127.0.0.1:9091
 
   # key used to registered to sd
   serviceKey: /services/example
@@ -51,3 +51,12 @@ serviceDiscovery:
   # servers of etcd cluster this service used to visit
   etcdServers:
     - 127.0.0.1:2379
+
+####################################################
+# service statistic config
+####################################################
+statistic:
+  enable: false
+  tracing:
+    zipkin:
+      url: http://localhost:9411/api/v2/spans

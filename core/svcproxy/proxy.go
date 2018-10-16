@@ -3,6 +3,7 @@ package svcproxy
 import (
 	"aria/core/log"
 	"aria/core/svcdiscovery"
+	"aria/core/tools"
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
@@ -10,7 +11,7 @@ import (
 	"reflect"
 )
 
-var logger = log.GetLogger("ariaServiceProxy")
+var logger = log.GetLogger("AriaServiceProxy")
 
 var serviceMap = map[string]*ServiceProxy{}
 var ProxyMethodName = "Proxy"
@@ -48,12 +49,17 @@ func (sr *ServiceProxy) GetServiceFullName() string {
 	return fmt.Sprintf("%s -> %s", sr.key, sr.method)
 }
 
-func (sr *ServiceProxy) Call(request interface{}) (response interface{}, err error) {
+func (sr *ServiceProxy) Call(ctx context.Context, request interface{}) (response interface{}, err error) {
 	if !sr.initialized {
 		err = fmt.Errorf("service [%s] not be initialized.", sr.GetServiceFullName())
 		return
 	}
-	response, err = sr.endpoint(context.TODO(), request)
+
+	span := tools.GetZipkinSpanFromContext(ctx)
+	span.SetName("proxy: call rpc")
+	newCtx := tools.SetZipkinSpanToGrpcHeader(ctx, span)
+	response, err = sr.endpoint(newCtx, request)
+	span.Finish()
 	return
 }
 
@@ -110,22 +116,22 @@ func InitializeAllServiceInOneNameSpace(namespace interface{}, serviceKey string
 	// find method with the same name of ns field
 	for i := 0; i < nsValue.NumField(); i++ {
 		methodToFind := nsType.Field(i).Name
-		logger.Debugf("will find method [%s] in %s", methodToFind, fType.String())
+		logger.Debugf("searching method [%s] in %s:", methodToFind, fType.String())
 		proxyMethod := reflect.Value{}
 		methodFoundField := reflect.Value{}
 		for j := 0; j < fType.NumField(); j++ {
-			logger.Debugf("=====> start | find method [%s] in %s -> %s", methodToFind, fType.String(), fType.Field(j).Name)
+			logger.Debugf("  =====> start | find method [%s] in %s -> %s", methodToFind, fType.String(), fType.Field(j).Name)
 
 			methodFound := fValue.Field(j).MethodByName(methodToFind)
 			if !methodFound.IsValid() {
-				logger.Debugf("<===== end | method [%s] NOT FOUND in %s -> %s, continue...", methodToFind, fType.String(), fType.Field(j).Name)
+				logger.Debugf("  <===== end | method [%s] NOT FOUND in %s -> %s, continue...", methodToFind, fType.String(), fType.Field(j).Name)
 				continue
 			}
 
 			// method found,then get the proxy method
 			methodFoundField = fValue.Field(j)
 			proxyMethod = fValue.Field(j).MethodByName(ProxyMethodName)
-			logger.Debugf("<===== end | method [%s] FOUND in %s -> %s, break!", methodToFind, fType.String(), fType.Field(j).Name)
+			logger.Debugf("  <===== end | method [%s] FOUND in %s -> %s, break!", methodToFind, fType.String(), fType.Field(j).Name)
 			break
 		}
 		// can not found method in factory

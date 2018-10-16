@@ -2,8 +2,8 @@ package svcproxy
 
 import (
 	"aria/core/config"
+	"aria/core/middleware"
 	"aria/core/svcdiscovery"
-	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
@@ -27,7 +27,8 @@ func ConvertServiceToProxy(serviceKey string, connectors ...Connector) error {
 			return fmt.Errorf("add middleware error: %s", err)
 		}
 		// TODO: add other middlewares
-		connector.AddMiddleware(logMiddleware)
+		connector.AddMiddleware(middleware.LogMiddleware(logger))
+		connector.AddMiddleware(middleware.ZipkinMiddleware)
 		// must add default middleware at the end
 		connector.AddMiddleware(dmw)
 	}
@@ -48,14 +49,6 @@ func makeDefaultMiddleware(serviceKey string, factory sd.Factory) (endpoint.Midd
 		return proxyEndpoint
 	}
 	return mw, nil
-}
-
-func logMiddleware(ep endpoint.Endpoint) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
-		response, err = ep(ctx, request)
-		logger.Debugf("[Proxy Log] mothod: %v, request: %v, response: %v, error: %s", ctx.Value("FullMethod"), request, response, err)
-		return
-	}
 }
 
 type nilConnector struct{}

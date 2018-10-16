@@ -29,6 +29,12 @@ func main() {
 	g.Use(gin.Recovery())
 	g.Use(middleware.Logger())
 	g.Use(cors.Default())
+	g.Use(middleware.ZipkinTracing(
+		Config().Statistic.Tracing.Zipkin.Url,
+		"webserver",
+		fmt.Sprintf("0.0.0.0:%d", Config().Server.Port),
+		Config().Statistic.Enable,
+	))
 
 	authorizedGroup := g.Group("/")
 	authorizedGroup.GET("/production/get/:id", handler.GetProduction)

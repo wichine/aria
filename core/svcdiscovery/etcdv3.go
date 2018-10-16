@@ -72,8 +72,20 @@ func (sd *etcdv3SD) Subscribe(serviceKey string, f kitsd.Factory) (endpoint.Endp
 	if err != nil {
 		return nil, fmt.Errorf("create new instancer error: %s", err)
 	}
+	// go testServiceDiscovery(sd.client, serviceKey)
 	endpointer := kitsd.NewEndpointer(instancer, f, log.DefaultGoKitLogger)
 	balancer := lb.NewRoundRobin(endpointer)
 	retry := lb.Retry(3, 500*time.Millisecond, balancer)
 	return retry, nil
+}
+
+func testServiceDiscovery(client etcdv3.Client, prefix string) {
+	for {
+		es, err := client.GetEntries(prefix)
+		if err != nil {
+			fmt.Println("************************ error: ", err)
+		}
+		fmt.Println("************************ entries: ", es)
+		time.Sleep(1 * time.Second)
+	}
 }
