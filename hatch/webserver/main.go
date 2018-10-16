@@ -41,7 +41,9 @@ func main() {
 	authorizedGroup.POST("/production/add", handler.AddProduction)
 
 	// process swagger api docs
-	swagger(g)
+	if Config().WithSwagger {
+		swagger(g)
+	}
 
 	address := fmt.Sprintf(":%d", Config().Port)
 	if err := g.Run(address); err != nil {
@@ -50,10 +52,8 @@ func main() {
 }
 
 func swagger(engine *gin.Engine) {
-	if Config().GenerateDocs {
-		gen.New().Build("./", "main.go", "./swagger", "camelcase")
-	}
-	if Config().SwaggerServerOn {
-		engine.Static("/swagger", "./swagger")
-	}
+	gen.New().Build("./", "main.go", Config().Swagger.Path, "camelcase")
+
+	engine.Static("/swagger", "./swagger")
+
 }

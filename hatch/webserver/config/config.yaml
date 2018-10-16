@@ -2,8 +2,8 @@ server:
   port: 8080
 
 swagger:
-  generateDocs: true
-  swaggerServerOn: true
+  withSwagger: true
+  path: ./swagger
 
 services:
   example: /services/apigateway

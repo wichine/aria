@@ -7,8 +7,8 @@ import (
 )
 
 type Swagger struct {
-	GenerateDocs    bool
-	SwaggerServerOn bool
+	WithSwagger bool
+	Path        string
 }
 
 type Server struct {
