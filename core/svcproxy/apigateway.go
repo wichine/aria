@@ -6,6 +6,7 @@ import (
 	"reflect"
 )
 
+// convert a service implement (grpc server handler) to a proxy server (commonly use as apigateway)
 func ConvertServiceToProxyServer(serviceKey string, serviceImpl interface{}) core.Transport {
 	sPtr := reflect.ValueOf(serviceImpl)
 	if sPtr.Kind().String() != "ptr" {

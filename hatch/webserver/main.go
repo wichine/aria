@@ -20,7 +20,7 @@ func main() {
 	}
 
 	// init microservice
-	if err := service.InitService(Config().Services); err != nil {
+	if err := service.InitService(Config().Services, Config().EtcdServers); err != nil {
 		panic(err)
 	}
 

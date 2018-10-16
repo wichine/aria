@@ -38,7 +38,7 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	service.RegisterAllService(server, config.Config().Service)
+	service.RegisterAllService(server, config.Config().Service.ServiceProxy)
 
 	// start etcd if needed
 	if config.Config().ServiceDiscovery.Enable {

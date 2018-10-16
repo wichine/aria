@@ -41,7 +41,7 @@ func InitializeZipkin(reporterUrl, serviceName, localAddress string, on bool) er
 	if err != nil {
 		return fmt.Errorf("create zipkin tracer error: %s", err)
 	}
-	if !isZipkinApiValid(reporterUrl) {
+	if on && !isZipkinApiValid(reporterUrl) {
 		return fmt.Errorf("zipkin api %q not valid", reporterUrl)
 	}
 	return nil

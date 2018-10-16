@@ -96,7 +96,7 @@ func InitServiceProxy(servers []string) error {
 // namespace: the pointer to a object that will be called as a proxy namespace
 // serviceKey: the service key which will be used to subcribe service from service discovery component
 // factory: the implement for the service imported used to search Proxy() method to register to svcproxy
-func InitializeAllServiceInOneNameSpace(namespace interface{}, serviceKey string, factory interface{}) {
+func initializeAllServiceInOneNameSpace(namespace interface{}, serviceKey string, factory interface{}) {
 	nsPtr := reflect.ValueOf(namespace)
 	if nsPtr.Kind().String() != "ptr" {
 		panic("namespace should be a ptr of a service proxy namespace object!")

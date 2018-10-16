@@ -14,9 +14,6 @@ type exampleNameSpace struct {
 }
 
 func init() {
-	// the map key must be a key in config.service.serviceProxy
-	initFuncs["example"] = func(serviceKey string) {
-		// use the global namespace var as parameter
-		svcproxy.InitializeAllServiceInOneNameSpace(&Example, serviceKey, exampleservice.ServiceImpl())
-	}
+	// the serviceName must be a key in config.service.serviceProxy
+	svcproxy.RegisterServiceDiscriptionToProxyCenter("example", &Example, exampleservice.ServiceImpl())
 }
