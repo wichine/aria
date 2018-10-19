@@ -13,11 +13,15 @@ import (
 
 var logger = log.GetLogger("AriaServiceProxy")
 
-var serviceMap = map[string]*ServiceProxy{}
+var allServiceProxiesRegisterd = []*ServiceProxy{}
 var ProxyMethodName = "Proxy"
 
 type ServiceProxy struct {
-	key         string
+	// key for subscribe service from service discovery component
+	key string
+	// namesapce is the name of a service,distinct between each other
+	namespace string
+	// method is a field in a service
 	method      string
 	factory     kitsd.Factory
 	endpoint    endpoint.Endpoint
@@ -25,9 +29,10 @@ type ServiceProxy struct {
 }
 
 // Step1: create a new service proxy object
-func NewServiceProxy(key, method string, f kitsd.Factory) *ServiceProxy {
+func NewServiceProxy(key, ns, method string, f kitsd.Factory) *ServiceProxy {
 	return &ServiceProxy{
 		key:         key,
+		namespace:   ns,
 		method:      method,
 		factory:     f,
 		endpoint:    endpoint.Nop,
@@ -46,7 +51,7 @@ func (sr *ServiceProxy) initialize(sd svcdiscovery.SvcDiscovery) error {
 }
 
 func (sr *ServiceProxy) GetServiceFullName() string {
-	return fmt.Sprintf("%s -> %s", sr.key, sr.method)
+	return fmt.Sprintf("%s -> %s.%s", sr.key, sr.namespace, sr.method)
 }
 
 func (sr *ServiceProxy) Call(ctx context.Context, request interface{}) (response interface{}, err error) {
@@ -65,9 +70,7 @@ func (sr *ServiceProxy) Call(ctx context.Context, request interface{}) (response
 
 // Step2: register service proxy object to global map
 func RegisterServices(services ...*ServiceProxy) {
-	for _, s := range services {
-		serviceMap[s.method] = s
-	}
+	allServiceProxiesRegisterd = append(allServiceProxiesRegisterd, services...)
 }
 
 // Step3: call this method to subcribe from service discovery component
@@ -81,7 +84,7 @@ func InitServiceProxy(servers []string) error {
 
 	// subcribe necessary services from sd
 	serviceNames := []string{}
-	for _, sr := range serviceMap {
+	for _, sr := range allServiceProxiesRegisterd {
 		err = sr.initialize(sd)
 		if err != nil {
 			return fmt.Errorf("init service proxy error: %s", err)
@@ -154,7 +157,7 @@ func initializeAllServiceInOneNameSpace(namespace interface{}, serviceKey string
 			panic(fmt.Sprintf("%s -> %s() should return a sd.Factory,but returns %s", methodFoundField.Type().String(), ProxyMethodName, result[0].Type().String()))
 		}
 		// create service proxy objects to init value
-		nsValue.Field(i).Set(reflect.ValueOf(NewServiceProxy(serviceKey, methodToFind, sdFactory)))
+		nsValue.Field(i).Set(reflect.ValueOf(NewServiceProxy(serviceKey, fType.String(), methodToFind, sdFactory)))
 		// register service proxy object to global map
 		RegisterServices(nsValue.Field(i).Interface().(*ServiceProxy))
 	}
