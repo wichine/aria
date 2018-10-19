@@ -14,12 +14,7 @@ type Connector interface {
 	Proxy() sd.Factory
 }
 
-var isServiceWrapMiddleware = map[string]bool{}
-
 func ConvertServiceToProxy(serviceKey string, connectors ...Connector) error {
-	if isServiceWrapMiddleware[serviceKey] {
-		return fmt.Errorf("service [%s] already wrap middleware", serviceKey)
-	}
 	for _, connector := range connectors {
 		// default middleware
 		dmw, err := makeDefaultMiddleware(serviceKey, connector.Proxy())
@@ -32,7 +27,6 @@ func ConvertServiceToProxy(serviceKey string, connectors ...Connector) error {
 		// must add default middleware at the end
 		connector.AddMiddleware(dmw)
 	}
-	isServiceWrapMiddleware[serviceKey] = true
 	return nil
 }
 
