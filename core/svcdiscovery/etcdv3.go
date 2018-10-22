@@ -75,7 +75,7 @@ func (sd *etcdv3SD) Subscribe(serviceKey string, f kitsd.Factory) (endpoint.Endp
 	// go testServiceDiscovery(sd.client, serviceKey)
 	endpointer := kitsd.NewEndpointer(instancer, f, log.DefaultGoKitLogger)
 	balancer := lb.NewRoundRobin(endpointer)
-	retry := lb.Retry(3, 500*time.Millisecond, balancer)
+	retry := lb.Retry(3, 5000*time.Millisecond, balancer)
 	return retry, nil
 }
 
